@@ -13,6 +13,10 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Courses from "./pages/Courses";
 import Map from "./pages/Map";
+import Events from "./pages/Events";
+import Clubs from "./pages/Clubs";
+import Notifications from "./pages/Notifications";
+import Support from "./pages/Support";
 import Profile from "./pages/Profile";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -33,6 +37,10 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/map" element={<Map />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/clubs" element={<Clubs />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/support" element={<Support />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />

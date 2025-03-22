@@ -98,30 +98,50 @@ export function AppSidebar() {
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Calendar className="h-5 w-5" />
-                  <span>Events</span>
+                <SidebarMenuButton
+                  isActive={location.pathname === '/events'}
+                  asChild
+                >
+                  <Link to="/events">
+                    <Calendar className="h-5 w-5" />
+                    <span>Events</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Users className="h-5 w-5" />
-                  <span>Clubs</span>
+                <SidebarMenuButton
+                  isActive={location.pathname === '/clubs'}
+                  asChild
+                >
+                  <Link to="/clubs">
+                    <Users className="h-5 w-5" />
+                    <span>Clubs</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Bell className="h-5 w-5" />
-                  <span>Notifications</span>
+                <SidebarMenuButton
+                  isActive={location.pathname === '/notifications'}
+                  asChild
+                >
+                  <Link to="/notifications">
+                    <Bell className="h-5 w-5" />
+                    <span>Notifications</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <LifeBuoy className="h-5 w-5" />
-                  <span>Support</span>
+                <SidebarMenuButton
+                  isActive={location.pathname === '/support'}
+                  asChild
+                >
+                  <Link to="/support">
+                    <LifeBuoy className="h-5 w-5" />
+                    <span>Support</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
