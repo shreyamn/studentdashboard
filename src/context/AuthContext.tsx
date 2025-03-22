@@ -23,6 +23,7 @@ interface AuthContextType {
     role: 'student' | 'faculty' | 'staff'
   ) => Promise<void>;
   logout: () => void;
+  updateProfileImage: (imageUrl: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -126,6 +127,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const updateProfileImage = (imageUrl: string) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        profileImage: imageUrl
+      };
+      setUser(updatedUser);
+      localStorage.setItem('campusAppUser', JSON.stringify(updatedUser));
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('campusAppUser');
@@ -140,6 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         register,
         logout,
+        updateProfileImage,
       }}
     >
       {children}

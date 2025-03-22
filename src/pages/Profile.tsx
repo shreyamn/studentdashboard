@@ -31,9 +31,10 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, updateProfileImage } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | undefined>(user?.profileImage);
 
   // Form state
   const [profileData, setProfileData] = useState({
@@ -68,8 +69,28 @@ export default function Profile() {
     });
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Create a URL for the selected image file
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+      
+      toast({
+        title: "Photo selected",
+        description: "Your new profile photo has been selected. Save to apply changes."
+      });
+    }
+  };
+
   const handleSaveProfile = () => {
     setSaving(true);
+    
+    // Update profile image if changed
+    if (profileImage !== user?.profileImage) {
+      updateProfileImage(profileImage || '');
+    }
+    
     // Simulate API call
     setTimeout(() => {
       setSaving(false);
@@ -92,7 +113,7 @@ export default function Profile() {
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16 rounded-xl">
-                      <AvatarImage src={user?.profileImage} alt={user?.name} />
+                      <AvatarImage src={profileImage} alt={user?.name} />
                       <AvatarFallback className="text-lg">
                         {user?.name?.charAt(0)}
                       </AvatarFallback>
@@ -136,13 +157,25 @@ export default function Profile() {
                       <CardContent className="space-y-6">
                         <div className="flex items-center gap-4">
                           <Avatar className="h-24 w-24 rounded-lg">
-                            <AvatarImage src={user?.profileImage} alt={user?.name} />
+                            <AvatarImage src={profileImage} alt={user?.name} />
                             <AvatarFallback className="text-2xl">
                               {user?.name?.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <Button variant="outline" size="sm" className="mb-2">
+                            <input
+                              type="file"
+                              id="photo-upload"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={handlePhotoChange}
+                            />
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="mb-2"
+                              onClick={() => document.getElementById('photo-upload')?.click()}
+                            >
                               Change Photo
                             </Button>
                             <p className="text-xs text-muted-foreground">
