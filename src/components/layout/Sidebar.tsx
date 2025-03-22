@@ -63,7 +63,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  active={location.pathname === '/dashboard'}
+                  isActive={location.pathname === '/dashboard'}
                   asChild
                 >
                   <Link to="/dashboard">
@@ -75,7 +75,7 @@ export function AppSidebar() {
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  active={location.pathname === '/courses'}
+                  isActive={location.pathname === '/courses'}
                   asChild
                 >
                   <Link to="/courses">
@@ -87,7 +87,7 @@ export function AppSidebar() {
               
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  active={location.pathname === '/map'}
+                  isActive={location.pathname === '/map'}
                   asChild
                 >
                   <Link to="/map">
