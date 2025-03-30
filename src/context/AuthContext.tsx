@@ -49,6 +49,15 @@ const MOCK_USERS = [
     department: 'Mathematics',
     profileImage: 'https://i.pravatar.cc/150?img=2',
   },
+  {
+    id: '3',
+    name: 'Robert Johnson',
+    email: 'robert@university.edu',
+    password: 'password123',
+    role: 'staff',
+    department: 'Facilities Management',
+    profileImage: 'https://i.pravatar.cc/150?img=3',
+  },
 ];
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -115,6 +124,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           name,
           email,
           role,
+          department: role === 'staff' ? 'Facilities Management' : 
+                      role === 'faculty' ? 'General Faculty' : 'General Studies',
           profileImage: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`,
         };
         

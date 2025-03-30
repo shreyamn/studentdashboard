@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -19,6 +18,19 @@ import AttendanceWidget from '@/components/dashboard/AttendanceWidget';
 // Faculty dashboard components
 import FacultyDashboardHeader from '@/components/dashboard/FacultyDashboardHeader';
 import FacultyDashboardContent from '@/components/dashboard/FacultyDashboardContent';
+
+// Staff dashboard components
+import StaffDashboardHeader from '@/components/dashboard/StaffDashboardHeader';
+import StaffDashboardContent from '@/components/dashboard/StaffDashboardContent';
+
+// Types for dashboard data
+interface Notification {
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  type: "warning" | "info" | "success" | "alert"; // Added "alert" type
+}
 
 // Sample data for student dashboard
 const scheduleData = [
@@ -149,7 +161,7 @@ const cafeteriaMenuData = [
   },
 ];
 
-const notificationsData = [
+const notificationsData: Notification[] = [
   {
     id: 1,
     title: 'Assignment Due Soon',
@@ -204,6 +216,11 @@ export default function Dashboard() {
                 <>
                   <FacultyDashboardHeader />
                   <FacultyDashboardContent />
+                </>
+              ) : user?.role === 'staff' ? (
+                <>
+                  <StaffDashboardHeader />
+                  <StaffDashboardContent />
                 </>
               ) : (
                 <>
