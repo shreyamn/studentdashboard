@@ -4,24 +4,15 @@ import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/layout/Navbar';
 import { AppSidebar } from '@/components/layout/Sidebar';
 import PageTransition from '@/components/ui/PageTransition';
-import AnimatedCard from '@/components/ui/AnimatedCard';
-import { 
-  Calendar, 
-  BookOpen, 
-  Bell, 
-  Clock, 
-  FileText, 
-  Utensils, 
-  BookMarked,
-  ArrowRight
-} from 'lucide-react';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import TodaySchedule from '@/components/dashboard/TodaySchedule';
+import AssignmentsWidget from '@/components/dashboard/AssignmentsWidget';
+import CoursesWidget from '@/components/dashboard/CoursesWidget';
+import EventsWidget from '@/components/dashboard/EventsWidget';
+import NotificationsWidget from '@/components/dashboard/NotificationsWidget';
+import CafeteriaWidget from '@/components/dashboard/CafeteriaWidget';
+import AttendanceWidget from '@/components/dashboard/AttendanceWidget';
 
 // Mock data
 const assignmentsData = [
@@ -74,244 +65,21 @@ export default function Dashboard() {
           <Navbar />
           <PageTransition className="flex-1 pt-24 px-4 pb-8">
             <div className="container mx-auto">
-              <header className="mb-8">
-                <h1 className="text-3xl font-display font-bold tracking-tight mb-2">
-                  Welcome back, {user?.name?.split(' ')[0]}
-                </h1>
-                <p className="text-muted-foreground">
-                  Here's what's happening with your academic journey today
-                </p>
-              </header>
+              <DashboardHeader />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <AnimatedCard delay={0.1} className="col-span-1 md:col-span-2">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h2 className="font-display font-medium text-lg">Today's Schedule</h2>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      <Clock className="mr-1 h-3 w-3" /> {todaySchedule.length} Classes
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {todaySchedule.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <div className="min-w-[90px] text-sm font-medium">
-                          {item.startTime}
-                        </div>
-                        <div className="flex-1 bg-background rounded-lg p-3 border border-border">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h3 className="font-medium">
-                                {item.course || item.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {item.location}
-                              </p>
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                              {item.startTime} - {item.endTime}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </AnimatedCard>
-
-                <AnimatedCard delay={0.2}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display font-medium text-lg">Assignments Due Soon</h2>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      <FileText className="mr-1 h-3 w-3" /> {assignmentsData.length} Tasks
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {assignmentsData.map((assignment) => (
-                      <div 
-                        key={assignment.id} 
-                        className="bg-background rounded-lg p-3 border border-border flex items-center justify-between"
-                      >
-                        <div>
-                          <h3 className="font-medium">{assignment.title}</h3>
-                          <p className="text-sm text-muted-foreground">{assignment.course}</p>
-                        </div>
-                        <div className="text-right">
-                          <Badge 
-                            variant={
-                              assignment.status === 'In Progress' 
-                                ? 'secondary' 
-                                : 'outline'
-                            }
-                            className="mb-1"
-                          >
-                            {assignment.status}
-                          </Badge>
-                          <p className="text-xs text-muted-foreground">
-                            Due {new Date(assignment.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </AnimatedCard>
+                <TodaySchedule scheduleData={todaySchedule} />
+                <AssignmentsWidget assignmentsData={assignmentsData} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <AnimatedCard delay={0.3} className="col-span-1 md:col-span-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display font-medium text-lg">Your Courses</h2>
-                    <Link to="/courses" className="text-primary text-sm font-medium hover:underline flex items-center">
-                      View all courses
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {coursesData.map((course) => (
-                      <div 
-                        key={course.id} 
-                        className="bg-background rounded-lg p-4 border border-border hover:border-primary/50 transition-colors"
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <Badge variant="outline" className="mb-2">{course.code}</Badge>
-                            <h3 className="font-medium">{course.name}</h3>
-                            <p className="text-sm text-muted-foreground">{course.instructor}</p>
-                          </div>
-                          <BookMarked className="h-5 w-5 text-primary/70" />
-                        </div>
-                        <div className="mt-3">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs text-muted-foreground">Progress</span>
-                            <span className="text-xs font-medium">{course.progress}%</span>
-                          </div>
-                          <Progress value={course.progress} className="h-1.5" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </AnimatedCard>
-
-                <AnimatedCard delay={0.4}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display font-medium text-lg">Upcoming Events</h2>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      <Calendar className="mr-1 h-3 w-3" /> {eventsData.length} Events
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {eventsData.map((event) => (
-                      <div 
-                        key={event.id} 
-                        className="bg-background rounded-lg p-3 border border-border"
-                      >
-                        <h3 className="font-medium">{event.title}</h3>
-                        <div className="flex items-center text-sm text-muted-foreground mt-1">
-                          <Calendar className="h-3.5 w-3.5 mr-1" />
-                          <span className="mr-3">
-                            {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </span>
-                          <Clock className="h-3.5 w-3.5 mr-1" />
-                          <span>{event.time}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {event.location}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </AnimatedCard>
+                <CoursesWidget coursesData={coursesData} />
+                <EventsWidget eventsData={eventsData} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <AnimatedCard delay={0.5} className="col-span-1 md:col-span-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display font-medium text-lg">Recent Notifications</h2>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      <Bell className="mr-1 h-3 w-3" /> {notificationsData.length} New
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {notificationsData.map((notification) => (
-                      <div 
-                        key={notification.id} 
-                        className="bg-background rounded-lg p-3 border border-border flex items-start gap-3"
-                      >
-                        <div className={`p-2 rounded-full bg-${
-                          notification.type === 'warning' ? 'amber' : 
-                          notification.type === 'success' ? 'green' : 
-                          'blue'
-                        }-100 text-${
-                          notification.type === 'warning' ? 'amber' : 
-                          notification.type === 'success' ? 'green' : 
-                          'blue'
-                        }-500`}>
-                          {notification.type === 'warning' ? (
-                            <Bell className="h-4 w-4" />
-                          ) : notification.type === 'success' ? (
-                            <BookOpen className="h-4 w-4" />
-                          ) : (
-                            <Bell className="h-4 w-4" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
-                            <h3 className="font-medium">{notification.title}</h3>
-                            <span className="text-xs text-muted-foreground">
-                              {notification.time}
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {notification.description}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <div className="text-center mt-4">
-                      <Button variant="link" className="text-primary text-sm font-medium hover:underline flex items-center mx-auto">
-                        View all notifications
-                        <ArrowRight className="ml-1 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </AnimatedCard>
-
-                <AnimatedCard delay={0.6}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display font-medium text-lg">Today's Menu</h2>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                      <Utensils className="mr-1 h-3 w-3" /> Cafeteria
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {cafeteriaMenu.map((menuItem) => (
-                      <div 
-                        key={menuItem.id} 
-                        className="bg-background rounded-lg p-3 border border-border"
-                      >
-                        <h3 className="font-medium mb-2">{menuItem.meal}</h3>
-                        <div className="space-y-1">
-                          {menuItem.items.map((item, index) => (
-                            <div key={index} className="flex items-center gap-2 text-sm">
-                              <div className="h-1.5 w-1.5 rounded-full bg-primary/70"></div>
-                              <span>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </AnimatedCard>
+                <NotificationsWidget notificationsData={notificationsData} />
+                <CafeteriaWidget menuData={cafeteriaMenu} />
               </div>
             </div>
           </PageTransition>
