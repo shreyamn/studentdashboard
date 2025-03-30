@@ -2,14 +2,7 @@
 import { FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-
-interface Assignment {
-  id: number;
-  title: string;
-  course: string;
-  dueDate: string;
-  status: string;
-}
+import { Assignment } from '@/data/dashboardData';
 
 interface AssignmentsWidgetProps {
   assignmentsData: Assignment[];

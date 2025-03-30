@@ -2,14 +2,7 @@
 import { Calendar, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-
-interface Event {
-  id: number;
-  title: string;
-  location: string;
-  date: string;
-  time: string;
-}
+import { Event } from '@/data/dashboardData';
 
 interface EventsWidgetProps {
   eventsData: Event[];

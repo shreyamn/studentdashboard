@@ -4,14 +4,7 @@ import { ArrowRight, BookMarked } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-
-interface Course {
-  id: number;
-  name: string;
-  code: string;
-  instructor: string;
-  progress: number;
-}
+import { Course } from '@/data/dashboardData';
 
 interface CoursesWidgetProps {
   coursesData: Course[];
