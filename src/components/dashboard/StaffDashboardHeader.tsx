@@ -10,7 +10,7 @@ export default function StaffDashboardHeader() {
         Welcome {user?.name}
       </h1>
       <p className="text-muted-foreground">
-        Here's your staff tasks and campus maintenance schedule for today
+        Here's your maintenance tasks and campus events schedule for today
       </p>
     </header>
   );

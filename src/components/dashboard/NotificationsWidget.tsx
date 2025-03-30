@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Bell, BookOpen, ArrowRight } from 'lucide-react';
+import { Bell, BookOpen, ArrowRight, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AnimatedCard from '@/components/ui/AnimatedCard';
@@ -10,7 +10,7 @@ export interface Notification {
   title: string;
   description: string;
   time: string;
-  type: 'warning' | 'success' | 'info';
+  type: 'warning' | 'success' | 'info' | 'alert';
 }
 
 interface NotificationsWidgetProps {
@@ -36,14 +36,16 @@ export default function NotificationsWidget({ notificationsData }: Notifications
             <div className={`p-2 rounded-full bg-${
               notification.type === 'warning' ? 'amber' : 
               notification.type === 'success' ? 'green' : 
+              notification.type === 'alert' ? 'red' :
               'blue'
             }-100 text-${
               notification.type === 'warning' ? 'amber' : 
               notification.type === 'success' ? 'green' : 
+              notification.type === 'alert' ? 'red' :
               'blue'
             }-500`}>
-              {notification.type === 'warning' ? (
-                <Bell className="h-4 w-4" />
+              {notification.type === 'warning' || notification.type === 'alert' ? (
+                <AlertCircle className="h-4 w-4" />
               ) : notification.type === 'success' ? (
                 <BookOpen className="h-4 w-4" />
               ) : (
