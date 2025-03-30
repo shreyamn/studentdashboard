@@ -43,9 +43,9 @@ export default function Dashboard() {
             { id: 3, title: 'Programming Club Meeting', location: 'Room 103', date: '2023-11-16', time: '4:30 PM' },
           ],
           notifications: [
-            { id: 1, title: 'Coding Assignment Due', description: 'Database project due in 3 days', time: '1 hour ago', type: 'warning' },
-            { id: 2, title: 'New Lecture Materials', description: 'Algorithm notes uploaded', time: '3 hours ago', type: 'info' },
-            { id: 3, title: 'Project Feedback', description: 'UI/UX project grades posted', time: '1 day ago', type: 'success' },
+            { id: 1, title: 'Coding Assignment Due', description: 'Database project due in 3 days', time: '1 hour ago', type: 'warning' as const },
+            { id: 2, title: 'New Lecture Materials', description: 'Algorithm notes uploaded', time: '3 hours ago', type: 'info' as const },
+            { id: 3, title: 'Project Feedback', description: 'UI/UX project grades posted', time: '1 day ago', type: 'success' as const },
           ],
           schedule: [
             { id: 1, course: 'Algorithms', startTime: '09:00 AM', endTime: '10:30 AM', location: 'Science Building 301' },
@@ -73,9 +73,9 @@ export default function Dashboard() {
             { id: 3, title: 'Math Club Meeting', location: 'Room 205', date: '2023-11-16', time: '4:30 PM' },
           ],
           notifications: [
-            { id: 1, title: 'Math Assignment Due', description: 'Problem Set 3 due in 3 days', time: '1 hour ago', type: 'warning' },
-            { id: 2, title: 'New Formula Sheet', description: 'Calculus II formula sheet uploaded', time: '3 hours ago', type: 'info' },
-            { id: 3, title: 'Test Results', description: 'Linear Algebra test grades posted', time: '1 day ago', type: 'success' },
+            { id: 1, title: 'Math Assignment Due', description: 'Problem Set 3 due in 3 days', time: '1 hour ago', type: 'warning' as const },
+            { id: 2, title: 'New Formula Sheet', description: 'Calculus II formula sheet uploaded', time: '3 hours ago', type: 'info' as const },
+            { id: 3, title: 'Test Results', description: 'Linear Algebra test grades posted', time: '1 day ago', type: 'success' as const },
           ],
           schedule: [
             { id: 1, course: 'Calculus II', startTime: '09:00 AM', endTime: '10:30 AM', location: 'Math Building 201' },
@@ -103,9 +103,9 @@ export default function Dashboard() {
             { id: 3, title: 'Business Club Meeting', location: 'Room 305', date: '2023-11-16', time: '4:30 PM' },
           ],
           notifications: [
-            { id: 1, title: 'Business Plan Due', description: 'Entrepreneurship project due in 3 days', time: '1 hour ago', type: 'warning' },
-            { id: 2, title: 'Guest Speaker', description: 'CEO talk tomorrow at noon', time: '3 hours ago', type: 'info' },
-            { id: 3, title: 'Internship Opportunity', description: 'New finance internship posted', time: '1 day ago', type: 'success' },
+            { id: 1, title: 'Business Plan Due', description: 'Entrepreneurship project due in 3 days', time: '1 hour ago', type: 'warning' as const },
+            { id: 2, title: 'Guest Speaker', description: 'CEO talk tomorrow at noon', time: '3 hours ago', type: 'info' as const },
+            { id: 3, title: 'Internship Opportunity', description: 'New finance internship posted', time: '1 day ago', type: 'success' as const },
           ],
           schedule: [
             { id: 1, course: 'Entrepreneurship', startTime: '09:00 AM', endTime: '10:30 AM', location: 'Business Building 301' },
@@ -134,9 +134,9 @@ export default function Dashboard() {
             { id: 3, title: 'Student Council Meeting', location: 'Meeting Room 103', date: '2023-11-16', time: '4:30 PM' },
           ],
           notifications: [
-            { id: 1, title: 'Assignment Due Soon', description: 'Project due in 3 days', time: '1 hour ago', type: 'warning' },
-            { id: 2, title: 'New Announcement', description: 'Department meeting tomorrow', time: '3 hours ago', type: 'info' },
-            { id: 3, title: 'Grade Posted', description: 'Course grades posted', time: '1 day ago', type: 'success' },
+            { id: 1, title: 'Assignment Due Soon', description: 'Project due in 3 days', time: '1 hour ago', type: 'warning' as const },
+            { id: 2, title: 'New Announcement', description: 'Department meeting tomorrow', time: '3 hours ago', type: 'info' as const },
+            { id: 3, title: 'Grade Posted', description: 'Course grades posted', time: '1 day ago', type: 'success' as const },
           ],
           schedule: [
             { id: 1, course: 'Advanced Studies', startTime: '09:00 AM', endTime: '10:30 AM', location: 'Department Building 301' },

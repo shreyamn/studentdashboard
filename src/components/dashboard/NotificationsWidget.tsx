@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AnimatedCard from '@/components/ui/AnimatedCard';
 
-interface Notification {
+export interface Notification {
   id: number;
   title: string;
   description: string;
