@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
@@ -36,7 +35,6 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [profileImage, setProfileImage] = useState<string | undefined>(user?.profileImage);
 
-  // Form state
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -72,7 +70,6 @@ export default function Profile() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Create a URL for the selected image file
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
       
@@ -86,12 +83,10 @@ export default function Profile() {
   const handleSaveProfile = () => {
     setSaving(true);
     
-    // Update profile image if changed
     if (profileImage !== user?.profileImage) {
       updateProfileImage(profileImage || '');
     }
     
-    // Simulate API call
     setTimeout(() => {
       setSaving(false);
       toast({
@@ -112,7 +107,7 @@ export default function Profile() {
               <header className="mb-8">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16 rounded-xl">
+                    <Avatar animated className="h-16 w-16 rounded-xl">
                       <AvatarImage src={profileImage} alt={user?.name} />
                       <AvatarFallback className="text-lg">
                         {user?.name?.charAt(0)}
@@ -156,7 +151,7 @@ export default function Profile() {
                       </CardHeader>
                       <CardContent className="space-y-6">
                         <div className="flex items-center gap-4">
-                          <Avatar className="h-24 w-24 rounded-lg">
+                          <Avatar animated className="h-24 w-24 rounded-lg">
                             <AvatarImage src={profileImage} alt={user?.name} />
                             <AvatarFallback className="text-2xl">
                               {user?.name?.charAt(0)}

@@ -169,7 +169,7 @@ export default function Navbar() {
                     className="relative h-10 w-10 rounded-full"
                     aria-label="User menu"
                   >
-                    <Avatar className="h-9 w-9">
+                    <Avatar animated className="h-9 w-9">
                       <AvatarImage
                         src={user?.profileImage}
                         alt={user?.name || 'User'}
