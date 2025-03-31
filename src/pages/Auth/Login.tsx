@@ -182,9 +182,33 @@ export default function Login() {
         </div>
         
         <div className="text-center mt-5 text-sm text-muted-foreground">
-          <p>For demo purposes, use:</p>
-          <p>Email: john@university.edu | Password: password123</p>
-          <p>Email: jane@university.edu | Password: password123</p>
+          <p className="font-medium mb-2">Test accounts (password: password123)</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+            <div className="bg-background/50 p-2 rounded-md">
+              <h3 className="font-medium text-primary">Students</h3>
+              <p>usernameCS@edu.in (CS)</p>
+              <p>usernameM@edu.in (Math)</p>
+              <p>usernameB@edu.in (Biology)</p>
+              <p>usernameN@edu.in (Nursing)</p>
+            </div>
+            
+            <div className="bg-background/50 p-2 rounded-md">
+              <h3 className="font-medium text-primary">Faculty</h3>
+              <p>usernamefacultyCS@edu.in (CS)</p>
+              <p>usernamefacultyM@edu.in (Math)</p>
+              <p>usernamefacultyB@edu.in (Biology)</p>
+              <p>usernamefacultyN@edu.in (Nursing)</p>
+            </div>
+            
+            <div className="bg-background/50 p-2 rounded-md">
+              <h3 className="font-medium text-primary">Staff</h3>
+              <p>usernamestaffC@edu.in (Cleaning)</p>
+              <p>usernamestaffE@edu.in (Events)</p>
+              <p>john@university.edu</p>
+              <p>jane@university.edu</p>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
