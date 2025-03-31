@@ -1,18 +1,12 @@
-
-import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { AppSidebar } from '@/components/layout/Sidebar';
 import PageTransition from '@/components/ui/PageTransition';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import { CoursesHeader } from '@/components/courses/CoursesHeader';
-import { CourseList } from '@/components/courses/CourseList';
-import { CourseDetails } from '@/components/courses/CourseDetails';
-import { CourseTabContent } from '@/components/courses/CourseTabContent';
-import { EmptyCourses } from '@/components/courses/EmptyCourses';
-import { toast } from 'sonner';
-import { coursesData } from '@/data/coursesData';
+import { CourseContent } from '@/components/courses/CourseContent';
+import { DepartmentToggle } from '@/components/courses/DepartmentToggle';
+import { useCourseSelection } from '@/hooks/useCourseSelection';
 
 const allCoursesData = [
   {
@@ -193,59 +187,15 @@ const allCoursesData = [
 
 export default function Courses() {
   const { user } = useAuth();
-  const { toast: toastNotification } = useToast();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [displayedCourses, setDisplayedCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [showAllCourses, setShowAllCourses] = useState(false);
-
-  useEffect(() => {
-    // For initial page load, we'll use the actual coursesData from our data file
-    // This ensures we're working with the most current data
-    let filteredCourses = [];
-    
-    if (showAllCourses) {
-      // When showing all courses, use all courses regardless of department
-      filteredCourses = allCoursesData.length > 0 ? allCoursesData : coursesData;
-    } else if (user?.department) {
-      // Filter by user's department if they have one
-      filteredCourses = allCoursesData.length > 0 
-        ? allCoursesData.filter(course => course.department === user.department)
-        : coursesData.filter(course => course.department === user.department);
-    } else {
-      // If no department (or we're testing), show all courses
-      filteredCourses = allCoursesData.length > 0 ? allCoursesData : coursesData;
-    }
-    
-    setDisplayedCourses(filteredCourses);
-    
-    // Select the first course if there are any
-    if (filteredCourses.length > 0) {
-      setSelectedCourse(filteredCourses[0]);
-    } else {
-      setSelectedCourse(null);
-      if (!showAllCourses) {
-        toastNotification({
-          title: "No courses available",
-          description: `No courses found for ${user?.department || 'your'} department.`,
-          variant: "destructive",
-        });
-      }
-    }
-  }, [user, toastNotification, showAllCourses]);
-
-  const filteredCourses = displayedCourses.filter(
-    (course) =>
-      course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.instructor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.instructor.toLowerCase?.includes(searchQuery.toLowerCase())
-  );
-
-  const toggleShowAllCourses = () => {
-    setShowAllCourses(prev => !prev);
-    toast(showAllCourses ? "Showing your department courses" : "Showing all courses");
-  };
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredCourses,
+    selectedCourse,
+    setSelectedCourse,
+    showAllCourses,
+    toggleShowAllCourses
+  } = useCourseSelection(allCoursesData);
 
   return (
     <SidebarProvider>
@@ -261,35 +211,18 @@ export default function Courses() {
                 setSearchQuery={setSearchQuery}
               />
 
-              <div className="mb-4 flex justify-end">
-                <button
-                  onClick={toggleShowAllCourses}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  {showAllCourses ? "Show only my department courses" : "Show all courses"}
-                </button>
-              </div>
+              <DepartmentToggle 
+                showAllCourses={showAllCourses}
+                toggleShowAllCourses={toggleShowAllCourses}
+              />
 
-              {filteredCourses.length === 0 ? (
-                <EmptyCourses department={showAllCourses ? "all departments" : user?.department} />
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <CourseList 
-                    filteredCourses={filteredCourses}
-                    selectedCourse={selectedCourse}
-                    setSelectedCourse={setSelectedCourse}
-                  />
-
-                  <div className="lg:col-span-2">
-                    {selectedCourse && (
-                      <>
-                        <CourseDetails selectedCourse={selectedCourse} />
-                        <CourseTabContent selectedCourse={selectedCourse} />
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
+              <CourseContent 
+                filteredCourses={filteredCourses}
+                selectedCourse={selectedCourse}
+                setSelectedCourse={setSelectedCourse}
+                department={user?.department}
+                showAllCourses={showAllCourses}
+              />
             </div>
           </PageTransition>
         </div>
