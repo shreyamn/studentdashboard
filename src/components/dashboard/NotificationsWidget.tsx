@@ -7,21 +7,21 @@ import AnimatedCard from '@/components/ui/AnimatedCard';
 import { Notification } from '@/data/types';
 
 interface NotificationsWidgetProps {
-  notificationsData: Notification[];
+  notifications: Notification[];
 }
 
-export default function NotificationsWidget({ notificationsData }: NotificationsWidgetProps) {
+export default function NotificationsWidget({ notifications }: NotificationsWidgetProps) {
   return (
     <AnimatedCard delay={0.5} className="col-span-1 md:col-span-2">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-display font-medium text-lg">Recent Notifications</h2>
         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-          <Bell className="mr-1 h-3 w-3" /> {notificationsData.length} New
+          <Bell className="mr-1 h-3 w-3" /> {notifications.length} New
         </Badge>
       </div>
       
       <div className="space-y-3">
-        {notificationsData.map((notification) => (
+        {notifications.map((notification) => (
           <div 
             key={notification.id} 
             className="bg-background rounded-lg p-3 border border-border flex items-start gap-3"

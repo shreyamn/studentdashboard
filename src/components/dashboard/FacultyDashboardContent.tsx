@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Calendar, 
@@ -22,7 +21,6 @@ export default function FacultyDashboardContent() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('today');
   
-  // Sample teaching schedule for the faculty dashboard
   const teachingSchedule = [
     {
       id: 1,
@@ -47,7 +45,6 @@ export default function FacultyDashboardContent() {
     },
   ];
 
-  // Upcoming faculty meetings
   const upcomingMeetings = [
     {
       id: 1,
@@ -69,7 +66,6 @@ export default function FacultyDashboardContent() {
     },
   ];
 
-  // Faculty announcements
   const facultyAnnouncements = [
     {
       id: 1,
@@ -91,7 +87,6 @@ export default function FacultyDashboardContent() {
     },
   ];
 
-  // Office hours
   const officeHours = [
     {
       id: 1,
@@ -113,7 +108,6 @@ export default function FacultyDashboardContent() {
     },
   ];
 
-  // Recent student submissions
   const recentSubmissions = [
     {
       id: 1,
@@ -145,7 +139,6 @@ export default function FacultyDashboardContent() {
     },
   ];
 
-  // Notifications specific to faculty
   const facultyNotifications: Notification[] = [
     {
       id: 1,
@@ -171,7 +164,7 @@ export default function FacultyDashboardContent() {
     {
       id: 4,
       title: 'Teaching Evaluation Results Available',
-      description: 'The results from your last semester's teaching evaluations are now available for review.',
+      description: 'The results from your last semester\'s teaching evaluations are now available for review.',
       time: '1 week ago',
       type: 'info',
     },
@@ -289,7 +282,6 @@ export default function FacultyDashboardContent() {
         <TabsContent value="classes" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">My Classes</h2>
           <div className="grid gap-4">
-            {/* Class information would go here */}
             <Card className="p-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
