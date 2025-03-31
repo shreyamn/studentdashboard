@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import { AppSidebar } from '@/components/layout/Sidebar';
@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { SearchIcon, MapPin, BookOpen, Coffee, Pizza, Library, Users, LayoutGrid, List, Clock, BookMarked } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
 // Mock data for campus locations
 const locations = [
@@ -21,6 +23,7 @@ const locations = [
     description: 'Houses administrative offices and lecture halls',
     coordinates: { x: 35, y: 22 },
     icon: BookOpen,
+    rooms: ['Room 101', 'Room 102', 'Room 103', 'Room 104']
   },
   {
     id: 2,
@@ -30,6 +33,7 @@ const locations = [
     description: 'Labs and research facilities for natural sciences',
     coordinates: { x: 55, y: 35 },
     icon: BookOpen,
+    rooms: ['Lab 102', 'Room 203', 'Room 204', 'Lab 304']
   },
   {
     id: 3,
@@ -39,6 +43,7 @@ const locations = [
     description: 'Central library with study rooms and research resources',
     coordinates: { x: 20, y: 40 },
     icon: Library,
+    rooms: ['Study Room 1', 'Study Room 2', 'Conference Room A']
   },
   {
     id: 4,
@@ -48,6 +53,7 @@ const locations = [
     description: 'Student services, clubs, and recreation spaces',
     coordinates: { x: 45, y: 60 },
     icon: Users,
+    rooms: ['Club Space', 'Activity Hall', 'Student Lounge']
   },
   {
     id: 5,
@@ -57,6 +63,7 @@ const locations = [
     description: 'Main dining hall for students and faculty',
     coordinates: { x: 70, y: 50 },
     icon: Pizza,
+    rooms: ['Main Dining Area', 'Private Dining Room']
   },
   {
     id: 6,
@@ -66,6 +73,47 @@ const locations = [
     description: 'Grab a coffee or snack between classes',
     coordinates: { x: 30, y: 65 },
     icon: Coffee,
+    rooms: ['Coffee Shop']
+  },
+  {
+    id: 7,
+    name: 'Computer Science Building',
+    category: 'academic',
+    floor: 3,
+    description: 'Home to Computer Science department and technology labs',
+    coordinates: { x: 60, y: 25 },
+    icon: BookOpen,
+    rooms: ['Room 305', 'Lab 301', 'Room 302', 'Room 303']
+  },
+  {
+    id: 8,
+    name: 'Math Building',
+    category: 'academic',
+    floor: 2,
+    description: 'Houses Mathematics department classrooms and offices',
+    coordinates: { x: 48, y: 30 },
+    icon: BookOpen,
+    rooms: ['Room 201', 'Room 202', 'Room 203']
+  },
+  {
+    id: 9,
+    name: 'Biology Building',
+    category: 'academic',
+    floor: 2,
+    description: 'Biology department classrooms and research labs',
+    coordinates: { x: 52, y: 40 },
+    icon: BookOpen,
+    rooms: ['Room 203', 'Lab 201', 'Room 204']
+  },
+  {
+    id: 10,
+    name: 'Nursing Building',
+    category: 'academic',
+    floor: 3,
+    description: 'Nursing and Health Sciences department',
+    coordinates: { x: 38, y: 45 },
+    icon: BookOpen,
+    rooms: ['Room 105', 'Simulation Lab', 'Room 106']
   },
 ];
 
@@ -130,15 +178,52 @@ export default function Map() {
   const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [highlightedRoom, setHighlightedRoom] = useState<string | null>(null);
+  
+  // Get query params from URL
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const roomParam = queryParams.get('room');
+
+  useEffect(() => {
+    // If there's a room parameter, find its location and highlight it
+    if (roomParam) {
+      const roomToFind = roomParam.trim();
+      
+      // Find location that contains this room
+      for (const loc of locations) {
+        if (loc.rooms.some(room => room.toLowerCase().includes(roomToFind.toLowerCase()))) {
+          setSelectedLocation(loc.id);
+          setHighlightedRoom(roomToFind);
+          setSelectedRoom(loc.rooms.find(room => 
+            room.toLowerCase().includes(roomToFind.toLowerCase())
+          ) || null);
+          
+          // Show toast notification
+          toast.info(`Showing location of "${roomToFind}"`);
+          break;
+        }
+      }
+    }
+  }, [roomParam]);
 
   const handleLocationClick = (id: number) => {
     setSelectedLocation(id === selectedLocation ? null : id);
+    setSelectedRoom(null); // Reset selected room when changing location
+  };
+
+  const handleRoomClick = (room: string) => {
+    setSelectedRoom(room === selectedRoom ? null : room);
   };
 
   const filteredLocations = locations.filter(
-    (location) =>
-      location.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (!selectedCategory || location.category === selectedCategory)
+    (location) => {
+      const matchesSearch = location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           location.rooms.some(room => room.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      return matchesSearch && (!selectedCategory || location.category === selectedCategory);
+    }
   );
 
   return (
@@ -156,14 +241,14 @@ export default function Map() {
                       Campus Map
                     </h1>
                     <p className="text-muted-foreground">
-                      Navigate the university campus and book available spaces
+                      Navigate the university campus and find classrooms
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                       <Input
-                        placeholder="Search locations..."
+                        placeholder="Search locations or rooms..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9 w-full md:w-[280px]"
@@ -355,8 +440,32 @@ export default function Map() {
                                       </div>
                                     </div>
                                     
+                                    <div className="bg-background p-3 rounded-lg border border-border">
+                                      <h5 className="text-sm font-medium mb-2">Classrooms & Rooms</h5>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        {location.rooms.map((room, idx) => (
+                                          <div 
+                                            key={idx}
+                                            onClick={() => handleRoomClick(room)}
+                                            className={`p-2 border rounded-md text-sm cursor-pointer ${
+                                              selectedRoom === room || highlightedRoom === room
+                                                ? 'bg-primary/10 border-primary/30'
+                                                : 'hover:bg-muted'
+                                            }`}
+                                          >
+                                            <div className="flex items-center">
+                                              <MapPin className="h-3 w-3 mr-1 text-muted-foreground" />
+                                              <span>{room}</span>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    
                                     <div className="flex justify-end">
-                                      <Button>Get Directions</Button>
+                                      <Button onClick={() => toast.success("Directions to " + location.name)}>
+                                        Get Directions
+                                      </Button>
                                     </div>
                                   </div>
                                 </div>
@@ -374,7 +483,7 @@ export default function Map() {
                             <div className="w-full h-full flex items-center justify-center">
                               <div className="relative w-full h-full">
                                 <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900">
-                                  {/* Interactive map would go here, using a placeholder image for now */}
+                                  {/* Interactive map with highlighted rooms */}
                                   <div className="w-full h-full opacity-75">
                                     <svg
                                       width="100%"
@@ -384,12 +493,18 @@ export default function Map() {
                                       xmlns="http://www.w3.org/2000/svg"
                                     >
                                       {/* Buildings */}
-                                      <rect x="10" y="10" width="30" height="20" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
-                                      <rect x="50" y="15" width="30" height="30" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
-                                      <rect x="15" y="40" width="25" height="20" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
-                                      <rect x="45" y="55" width="20" height="20" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
-                                      <rect x="70" y="45" width="15" height="15" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
-                                      <rect x="25" y="65" width="15" height="15" className="fill-primary/30 stroke-primary/50" strokeWidth="0.5" />
+                                      <rect x="10" y="10" width="30" height="20" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 1 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="50" y="15" width="30" height="30" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 2 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="15" y="40" width="25" height="20" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 3 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="45" y="55" width="20" height="20" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 4 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="70" y="45" width="15" height="15" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 5 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="25" y="65" width="15" height="15" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 6 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      
+                                      {/* New academic buildings */}
+                                      <rect x="60" y="20" width="20" height="15" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 7 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="45" y="30" width="15" height="12" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 8 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="50" y="40" width="18" height="12" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 9 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
+                                      <rect x="35" y="45" width="12" height="15" className={`fill-primary/30 stroke-primary/50 ${selectedLocation === 10 ? 'fill-primary/40 stroke-primary' : ''}`} strokeWidth="0.5" />
                                       
                                       {/* Paths */}
                                       <path d="M25 30 L25 40" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
@@ -398,6 +513,8 @@ export default function Map() {
                                       <path d="M40 40 L45 55" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
                                       <path d="M65 45 L70 45" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
                                       <path d="M40 60 L45 65" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
+                                      <path d="M60 35 L60 40" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
+                                      <path d="M45 42 L50 42" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="0.75" />
 
                                       {/* Green Spaces */}
                                       <circle cx="35" cy="50" r="5" className="fill-green-500/20 stroke-green-500/40" strokeWidth="0.5" />
@@ -443,6 +560,30 @@ export default function Map() {
                                             >
                                               {location.name}
                                             </text>
+                                          )}
+                                          
+                                          {/* Show selected room if applicable */}
+                                          {selectedLocation === location.id && selectedRoom && (
+                                            <g transform="translate(0, 12)">
+                                              <rect
+                                                x="-10"
+                                                y="-5"
+                                                width="24"
+                                                height="10"
+                                                rx="2"
+                                                className="fill-primary/20 stroke-primary"
+                                                strokeWidth="0.3"
+                                              />
+                                              <text
+                                                x="2"
+                                                y="0"
+                                                textAnchor="middle"
+                                                className="fill-primary text-[1.8px]"
+                                                style={{ fontWeight: 500 }}
+                                              >
+                                                {selectedRoom}
+                                              </text>
+                                            </g>
                                           )}
                                         </g>
                                       ))}

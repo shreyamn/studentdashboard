@@ -25,6 +25,7 @@ export interface Course {
   instructor: string;
   progress: number;
   department?: string;
+  classroom?: string; // Add classroom information
 }
 
 export interface Assignment {

@@ -2,6 +2,7 @@
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
+import { Link } from 'react-router-dom';
 
 interface TeachingClass {
   id: number;
@@ -78,6 +79,15 @@ export default function TeachingScheduleWidget({ classesData, today }: TeachingS
                     <Clock className="inline h-3.5 w-3.5 mr-1" />
                     {cls.startTime} - {cls.endTime}
                   </span>
+                </div>
+                <div className="mt-2 flex justify-end">
+                  <Link 
+                    to="/map" 
+                    className="text-xs text-primary hover:underline flex items-center"
+                  >
+                    <MapPin className="mr-1 h-3 w-3" />
+                    Locate on map
+                  </Link>
                 </div>
               </div>
             </div>

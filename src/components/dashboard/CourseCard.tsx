@@ -1,9 +1,10 @@
 
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { BookMarked } from 'lucide-react';
+import { BookMarked, MapPin } from 'lucide-react';
 import { Course } from '@/data/types';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 interface CourseCardProps {
   course: Course;
@@ -21,6 +22,12 @@ export default function CourseCard({ course }: CourseCardProps) {
           <Badge variant="outline" className="mb-2">{course.code}</Badge>
           <h3 className="font-medium">{course.name}</h3>
           <p className="text-sm text-muted-foreground">{course.instructor}</p>
+          {course.classroom && (
+            <p className="text-xs flex items-center text-muted-foreground mt-1">
+              <MapPin className="h-3 w-3 mr-1" />
+              {course.classroom}
+            </p>
+          )}
         </div>
         <BookMarked className="h-5 w-5 text-primary/70" />
       </div>
@@ -31,6 +38,17 @@ export default function CourseCard({ course }: CourseCardProps) {
         </div>
         <Progress value={course.progress} className="h-1.5" />
       </div>
+      {course.classroom && (
+        <div className="mt-2 flex justify-end">
+          <Link 
+            to="/map" 
+            className="text-xs text-primary hover:underline flex items-center"
+          >
+            <MapPin className="mr-1 h-3 w-3" />
+            Locate on map
+          </Link>
+        </div>
+      )}
     </motion.div>
   );
 }

@@ -1,8 +1,9 @@
 
-import { Clock } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
 import { ScheduleItem } from '@/data/types';
+import { Link } from 'react-router-dom';
 
 interface TodayScheduleProps {
   scheduleData: ScheduleItem[];
@@ -35,13 +36,23 @@ export default function TodaySchedule({ scheduleData }: TodayScheduleProps) {
                   <h3 className="font-medium">
                     {item.course || item.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground flex items-center">
+                    <MapPin className="h-3 w-3 mr-1 inline" />
                     {item.location}
                   </p>
                 </div>
                 <span className="text-xs text-muted-foreground">
                   {item.startTime} - {item.endTime}
                 </span>
+              </div>
+              <div className="mt-2 flex justify-end">
+                <Link 
+                  to="/map" 
+                  className="text-xs text-primary hover:underline flex items-center"
+                >
+                  <MapPin className="mr-1 h-3 w-3" />
+                  Locate on map
+                </Link>
               </div>
             </div>
           </div>
