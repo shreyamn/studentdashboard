@@ -84,6 +84,25 @@ export default function CoursesList({ courses }: CoursesListProps) {
                 </div>
               </div>
               
+              {/* Add attendance section */}
+              {course.attendancePercentage !== undefined && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="flex items-center">
+                      <Users className="h-3 w-3 mr-1" />
+                      Attendance
+                    </span>
+                    <span className="font-medium">{course.attendancePercentage}%</span>
+                  </div>
+                  <div className="w-full bg-secondary h-1.5 rounded-full">
+                    <div 
+                      className="bg-primary/80 h-1.5 rounded-full" 
+                      style={{ width: `${course.attendancePercentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+              
               <div className="flex justify-between items-center mt-4">
                 <Link 
                   to="/courses" 

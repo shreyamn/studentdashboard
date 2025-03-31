@@ -10,6 +10,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Alan Turing',
     progress: 75,
     department: 'Computer Science',
+    classroom: 'CS Building 305',
+    attendancePercentage: 92,
   },
   {
     id: 5,
@@ -18,6 +20,8 @@ export const coursesData: Course[] = [
     instructor: 'Prof. Ada Lovelace',
     progress: 65,
     department: 'Computer Science',
+    classroom: 'CS Building 405',
+    attendancePercentage: 85,
   },
   {
     id: 9,
@@ -26,6 +30,8 @@ export const coursesData: Course[] = [
     instructor: 'Prof. Tim Berners-Lee',
     progress: 50,
     department: 'Computer Science',
+    classroom: 'CS Building 210',
+    attendancePercentage: 78,
   },
   {
     id: 10,
@@ -34,6 +40,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Geoffrey Hinton',
     progress: 30,
     department: 'Computer Science',
+    classroom: 'CS Building 501',
+    attendancePercentage: 65,
   },
   
   // Mathematics Courses
@@ -44,6 +52,8 @@ export const coursesData: Course[] = [
     instructor: 'Prof. Robert Miller',
     progress: 60,
     department: 'Mathematics',
+    classroom: 'Math Building 105',
+    attendancePercentage: 88,
   },
   {
     id: 6,
@@ -52,6 +62,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Katherine Johnson',
     progress: 55,
     department: 'Mathematics',
+    classroom: 'Math Building 201',
+    attendancePercentage: 75,
   },
   {
     id: 11,
@@ -60,6 +72,8 @@ export const coursesData: Course[] = [
     instructor: 'Prof. Isaac Newton',
     progress: 70,
     department: 'Mathematics',
+    classroom: 'Math Building 110',
+    attendancePercentage: 90,
   },
   {
     id: 12,
@@ -68,6 +82,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Emmy Noether',
     progress: 45,
     department: 'Mathematics',
+    classroom: 'Math Building 205',
+    attendancePercentage: 82,
   },
   
   // Biology Courses
@@ -78,6 +94,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Francis Crick',
     progress: 70,
     department: 'Biology',
+    classroom: 'Science Building 201',
+    attendancePercentage: 87,
   },
   {
     id: 13,
@@ -86,6 +104,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Gregor Mendel',
     progress: 65,
     department: 'Biology',
+    classroom: 'Science Building 301',
+    attendancePercentage: 79,
   },
   {
     id: 14,
@@ -94,6 +114,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Rachel Carson',
     progress: 80,
     department: 'Biology',
+    classroom: 'Science Building 205',
+    attendancePercentage: 94,
   },
   {
     id: 15,
@@ -102,6 +124,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Elizabeth Blackwell',
     progress: 75,
     department: 'Biology',
+    classroom: 'Science Building 210',
+    attendancePercentage: 91,
   },
   
   // Nursing Courses
@@ -112,6 +136,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Florence Nightingale',
     progress: 80,
     department: 'Nursing',
+    classroom: 'Nursing Building 201',
+    attendancePercentage: 96,
   },
   {
     id: 16,
@@ -120,6 +146,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Clara Barton',
     progress: 60,
     department: 'Nursing',
+    classroom: 'Nursing Building 205',
+    attendancePercentage: 87,
   },
   {
     id: 17,
@@ -128,6 +156,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Virginia Henderson',
     progress: 70,
     department: 'Nursing',
+    classroom: 'Nursing Building 301',
+    attendancePercentage: 93,
   },
   {
     id: 18,
@@ -136,6 +166,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Martha Rogers',
     progress: 55,
     department: 'Nursing',
+    classroom: 'Nursing Building 310',
+    attendancePercentage: 84,
   },
   
   // Physics Courses (kept for reference)
@@ -146,6 +178,8 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Marie Curie',
     progress: 85,
     department: 'Physics',
+    classroom: 'Physics Building 205',
+    attendancePercentage: 89,
   },
   
   // Psychology Courses (kept for reference)
@@ -156,5 +190,7 @@ export const coursesData: Course[] = [
     instructor: 'Dr. Sigmund Freud',
     progress: 40,
     department: 'Psychology',
+    classroom: 'Psychology Building 101',
+    attendancePercentage: 77,
   },
 ];

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { AppSidebar } from '@/components/layout/Sidebar';
@@ -5,12 +6,12 @@ import PageTransition from '@/components/ui/PageTransition';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { BookOpen } from 'lucide-react';
 import { CoursesHeader } from '@/components/courses/CoursesHeader';
 import { CourseList } from '@/components/courses/CourseList';
 import { CourseDetails } from '@/components/courses/CourseDetails';
 import { CourseTabContent } from '@/components/courses/CourseTabContent';
 import { EmptyCourses } from '@/components/courses/EmptyCourses';
+import { toast } from 'sonner';
 
 const allCoursesData = [
   {
@@ -27,6 +28,8 @@ const allCoursesData = [
     credits: 4,
     status: 'In Progress',
     department: 'Computer Science',
+    attendanceRate: 95,
+    classroom: 'CS Building 305',
     assignments: [
       { title: 'Problem Set 1', due: '2023-11-10', status: 'Completed' },
       { title: 'Midterm Exam', due: '2023-11-15', status: 'Upcoming' },
@@ -54,6 +57,8 @@ const allCoursesData = [
     credits: 3,
     status: 'In Progress',
     department: 'Mathematics',
+    attendanceRate: 85,
+    classroom: 'Math Building 105',
     assignments: [
       { title: 'Problem Set 3', due: '2023-11-09', status: 'In Progress' },
       { title: 'Quiz 2', due: '2023-11-16', status: 'Upcoming' },
@@ -81,6 +86,8 @@ const allCoursesData = [
     credits: 4,
     status: 'In Progress',
     department: 'Biology',
+    attendanceRate: 88,
+    classroom: 'Science Building 301',
     assignments: [
       { title: 'Lab Report', due: '2023-11-08', status: 'In Progress' },
       { title: 'Research Paper', due: '2023-11-20', status: 'Not Started' },
@@ -108,6 +115,8 @@ const allCoursesData = [
     credits: 3,
     status: 'In Progress',
     department: 'Business',
+    attendanceRate: 76,
+    classroom: 'Business Building 205',
     assignments: [
       { title: 'Case Study Analysis', due: '2023-11-14', status: 'Not Started' },
       { title: 'Group Project', due: '2023-11-28', status: 'In Progress' },
@@ -135,6 +144,8 @@ const allCoursesData = [
     credits: 4,
     status: 'In Progress',
     department: 'Nursing',
+    attendanceRate: 91,
+    classroom: 'Nursing Building 201',
     assignments: [
       { title: 'Patient Care Plan', due: '2023-11-12', status: 'In Progress' },
       { title: 'Clinical Skills Assessment', due: '2023-11-18', status: 'Upcoming' },
@@ -162,6 +173,8 @@ const allCoursesData = [
     credits: 4,
     status: 'In Progress',
     department: 'Computer Science',
+    attendanceRate: 84,
+    classroom: 'CS Building 405',
     assignments: [
       { title: 'Algorithm Analysis', due: '2023-11-11', status: 'In Progress' },
       { title: 'Programming Assignment', due: '2023-11-22', status: 'Not Started' },
@@ -179,16 +192,22 @@ const allCoursesData = [
 
 export default function Courses() {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const { toast: toastNotification } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [coursesData, setCoursesData] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showAllCourses, setShowAllCourses] = useState(false);
 
   useEffect(() => {
-    if (user?.department) {
-      const filteredCourses = allCoursesData.filter(
-        course => course.department === user.department
-      );
+    if (user) {
+      let filteredCourses = allCoursesData;
+      
+      // Only filter by department if showAllCourses is false
+      if (!showAllCourses && user.department) {
+        filteredCourses = allCoursesData.filter(
+          course => course.department === user.department
+        );
+      }
       
       setCoursesData(filteredCourses);
       
@@ -196,14 +215,16 @@ export default function Courses() {
         setSelectedCourse(filteredCourses[0]);
       } else {
         setSelectedCourse(null);
-        toast({
+        toastNotification({
           title: "No courses available",
-          description: `No courses found for ${user.department} department.`,
+          description: showAllCourses 
+            ? "No courses found in the database." 
+            : `No courses found for ${user.department} department.`,
           variant: "destructive",
         });
       }
     }
-  }, [user, toast]);
+  }, [user, toastNotification, showAllCourses]);
 
   const filteredCourses = coursesData.filter(
     (course) =>
@@ -211,6 +232,11 @@ export default function Courses() {
       course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructor.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const toggleShowAllCourses = () => {
+    setShowAllCourses(prev => !prev);
+    toast(showAllCourses ? "Showing your department courses" : "Showing all courses");
+  };
 
   return (
     <SidebarProvider>
@@ -225,6 +251,15 @@ export default function Courses() {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
               />
+
+              <div className="mb-4 flex justify-end">
+                <button
+                  onClick={toggleShowAllCourses}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {showAllCourses ? "Show only my department courses" : "Show all courses"}
+                </button>
+              </div>
 
               {coursesData.length === 0 ? (
                 <EmptyCourses department={user?.department} />

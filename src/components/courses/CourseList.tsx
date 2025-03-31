@@ -1,9 +1,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, FileText, Clock } from 'lucide-react';
+import { User, FileText, Clock, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Link } from 'react-router-dom';
 
 interface CourseListProps {
   filteredCourses: any[];
@@ -54,6 +55,28 @@ export function CourseList({ filteredCourses, selectedCourse, setSelectedCourse 
                   </div>
                   <Progress value={course.progress} className="h-1.5" />
                 </div>
+                
+                {/* Add attendance section */}
+                {course.attendanceRate !== undefined && (
+                  <div className="mt-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-muted-foreground flex items-center">
+                        <Users className="h-3 w-3 mr-1" />
+                        Attendance
+                      </span>
+                      <span className="text-xs font-medium">{course.attendanceRate}%</span>
+                    </div>
+                    <Progress value={course.attendanceRate} className="h-1.5" />
+                    <div className="mt-1 text-right">
+                      <Link 
+                        to="/attendance" 
+                        className="text-xs text-primary hover:underline inline-flex items-center"
+                      >
+                        View details
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ))
           ) : (
