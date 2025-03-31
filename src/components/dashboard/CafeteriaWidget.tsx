@@ -1,8 +1,9 @@
+
 import { Utensils } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
 import { useAuth } from '@/context/AuthContext';
-import { MenuItem } from '@/data/dashboardData';
+import { MenuItem } from '@/data/types';
 
 interface CafeteriaWidgetProps {
   menuData: MenuItem[];

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -16,15 +15,13 @@ import StudentDashboardContent from '@/components/dashboard/StudentDashboardCont
 import FacultyDashboardContent from '@/components/dashboard/FacultyDashboardContent';
 import StaffDashboardContent from '@/components/dashboard/StaffDashboardContent';
 
-// Data
-import {
-  scheduleData,
-  coursesData,
-  assignmentsData,
-  eventsData,
-  cafeteriaMenuData,
-  notificationsData
-} from '@/data/dashboardData';
+// Import data from separate files
+import { scheduleData } from '@/data/scheduleData';
+import { coursesData } from '@/data/coursesData';
+import { assignmentsData } from '@/data/assignmentsData';
+import { eventsData } from '@/data/eventsData';
+import { cafeteriaMenuData } from '@/data/cafeteriaMenuData';
+import { notificationsData } from '@/data/notificationsData';
 
 export default function Dashboard() {
   const { user } = useAuth();

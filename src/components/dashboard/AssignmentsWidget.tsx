@@ -2,7 +2,7 @@
 import { FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-import { Assignment } from '@/data/dashboardData';
+import { Assignment } from '@/data/types';
 
 interface AssignmentsWidgetProps {
   assignmentsData: Assignment[];

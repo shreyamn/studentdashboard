@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import TodaySchedule from '@/components/dashboard/TodaySchedule';
@@ -9,56 +8,15 @@ import CafeteriaWidget from '@/components/dashboard/CafeteriaWidget';
 import NotificationsWidget from '@/components/dashboard/NotificationsWidget';
 import AttendanceWidget from '@/components/dashboard/AttendanceWidget';
 
-// Types for dashboard data
-interface Notification {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  type: "warning" | "info" | "success" | "alert";
-}
-
-interface ScheduleItem {
-  id: number;
-  course?: string;
-  name?: string;
-  startTime: string;
-  endTime: string;
-  location: string;
-  department?: string;
-}
-
-interface Course {
-  id: number;
-  name: string;
-  code: string;
-  instructor: string;
-  progress: number;
-  department?: string;
-}
-
-interface Assignment {
-  id: number;
-  title: string;
-  course: string;
-  dueDate: string;
-  status: string;
-  department?: string;
-}
-
-interface Event {
-  id: number;
-  title: string;
-  location: string;
-  date: string;
-  time: string;
-}
-
-interface MenuItem {
-  id: number;
-  meal: string;
-  items: string[];
-}
+// Import types from the new types file
+import {
+  Notification,
+  ScheduleItem,
+  Course,
+  Assignment,
+  Event,
+  MenuItem
+} from '@/data/types';
 
 interface StudentDashboardContentProps {
   scheduleData: ScheduleItem[];

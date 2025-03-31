@@ -4,7 +4,7 @@ import { Bell, BookOpen, ArrowRight, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-import { Notification } from '@/data/dashboardData';
+import { Notification } from '@/data/types';
 
 interface NotificationsWidgetProps {
   notificationsData: Notification[];

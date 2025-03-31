@@ -2,7 +2,7 @@
 import { Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
-import { ScheduleItem } from '@/data/dashboardData';
+import { ScheduleItem } from '@/data/types';
 
 interface TodayScheduleProps {
   scheduleData: ScheduleItem[];

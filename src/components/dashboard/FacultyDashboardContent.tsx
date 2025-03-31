@@ -16,7 +16,7 @@ import NotificationsWidget from './NotificationsWidget';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Notification } from '@/data/notificationsData';
+import { Notification } from '@/data/types';
 
 export default function FacultyDashboardContent() {
   const { user } = useAuth();
@@ -59,7 +59,7 @@ export default function FacultyDashboardContent() {
       id: 2,
       title: 'Curriculum Review Committee',
       date: 'Thursday, 11:00 AM',
-      location: 'Dean\'s Office',
+      location: "Dean's Office",
     },
     {
       id: 3,
