@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useAuth } from '@/context/AuthContext';
 import TodaySchedule from '@/components/dashboard/TodaySchedule';
 import CoursesWidget from '@/components/dashboard/CoursesWidget';
 import AssignmentsWidget from '@/components/dashboard/AssignmentsWidget';
@@ -24,6 +25,7 @@ interface ScheduleItem {
   startTime: string;
   endTime: string;
   location: string;
+  department?: string;
 }
 
 interface Course {
@@ -32,6 +34,7 @@ interface Course {
   code: string;
   instructor: string;
   progress: number;
+  department?: string;
 }
 
 interface Assignment {
@@ -40,6 +43,7 @@ interface Assignment {
   course: string;
   dueDate: string;
   status: string;
+  department?: string;
 }
 
 interface Event {
@@ -73,14 +77,41 @@ export default function StudentDashboardContent({
   cafeteriaMenuData,
   notificationsData
 }: StudentDashboardContentProps) {
+  const { user } = useAuth();
+  
+  // Filter data based on user department
+  const userDepartment = user?.department || '';
+  
+  // Filter courses by department if user has a specific department
+  const filteredCourses = user?.department 
+    ? coursesData.filter(course => {
+        // For department-specific emails, filter by exact department
+        if (user.email.includes('@edu.in')) {
+          return course.department === user.department;
+        }
+        // For generic users, show all courses (or could filter by related fields)
+        return true;
+      })
+    : coursesData;
+    
+  // Filter schedule by department if appropriate
+  const filteredSchedule = user?.department && user.email.includes('@edu.in')
+    ? scheduleData.filter(item => !item.department || item.department === user.department)
+    : scheduleData;
+    
+  // Filter assignments by department if appropriate
+  const filteredAssignments = user?.department && user.email.includes('@edu.in')
+    ? assignmentsData.filter(assignment => !assignment.department || assignment.department === user.department)
+    : assignmentsData;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <TodaySchedule scheduleData={scheduleData} />
+      <TodaySchedule scheduleData={filteredSchedule} />
       <div className="hidden md:block">
         <AttendanceWidget />
       </div>
-      <CoursesWidget coursesData={coursesData} />
-      <AssignmentsWidget assignmentsData={assignmentsData} />
+      <CoursesWidget coursesData={filteredCourses} />
+      <AssignmentsWidget assignmentsData={filteredAssignments} />
       <EventsWidget eventsData={eventsData} />
       <CafeteriaWidget menuData={cafeteriaMenuData} />
       <NotificationsWidget notificationsData={notificationsData} />

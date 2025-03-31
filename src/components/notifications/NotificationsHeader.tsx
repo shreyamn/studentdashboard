@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 
 interface NotificationsHeaderProps {
   unreadCount: number;
@@ -12,6 +13,21 @@ const NotificationsHeader: React.FC<NotificationsHeaderProps> = ({
   unreadCount,
   onMarkAllAsRead
 }) => {
+  const { user } = useAuth();
+  const userRole = user?.role || 'student';
+  
+  // Role-specific notification messages
+  const getRoleSpecificMessage = () => {
+    switch(userRole) {
+      case 'faculty':
+        return "Faculty notifications";
+      case 'staff':
+        return "Staff alerts and notifications";
+      default:
+        return "You have notifications from your courses and campus events";
+    }
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,12 +38,17 @@ const NotificationsHeader: React.FC<NotificationsHeaderProps> = ({
       <div>
         <h1 className="text-3xl font-bold">Notifications</h1>
         <p className="text-muted-foreground">
-          You have {unreadCount} unread notifications
+          {unreadCount > 0 
+            ? `You have ${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}`
+            : getRoleSpecificMessage()
+          }
         </p>
       </div>
-      <Button variant="outline" size="sm" onClick={onMarkAllAsRead}>
-        Mark all as read
-      </Button>
+      {unreadCount > 0 && (
+        <Button variant="outline" size="sm" onClick={onMarkAllAsRead}>
+          Mark all as read
+        </Button>
+      )}
     </motion.div>
   );
 };
