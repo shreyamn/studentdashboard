@@ -1,21 +1,20 @@
-import React from 'react';
-import { useAuth } from '@/context/AuthContext';
-import TodaySchedule from '@/components/dashboard/TodaySchedule';
-import CoursesWidget from '@/components/dashboard/CoursesWidget';
-import AssignmentsWidget from '@/components/dashboard/AssignmentsWidget';
-import EventsWidget from '@/components/dashboard/EventsWidget';
-import CafeteriaWidget from '@/components/dashboard/CafeteriaWidget';
-import NotificationsWidget from '@/components/dashboard/NotificationsWidget';
-import AttendanceWidget from '@/components/dashboard/AttendanceWidget';
 
-// Import types from the new types file
-import {
-  Notification,
-  ScheduleItem,
-  Course,
-  Assignment,
-  Event,
-  MenuItem
+import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TodaySchedule from './TodaySchedule';
+import CoursesWidget from './CoursesWidget';
+import AssignmentsWidget from './AssignmentsWidget';
+import EventsWidget from './EventsWidget';
+import CafeteriaWidget from './CafeteriaWidget';
+import NotificationsWidget from './NotificationsWidget';
+import AttendanceWidget from './AttendanceWidget';
+import { 
+  ScheduleItem, 
+  Course, 
+  Assignment, 
+  Event, 
+  MenuItem, 
+  Notification 
 } from '@/data/types';
 
 interface StudentDashboardContentProps {
@@ -35,47 +34,57 @@ export default function StudentDashboardContent({
   cafeteriaMenuData,
   notificationsData
 }: StudentDashboardContentProps) {
-  const { user } = useAuth();
   
-  // Filter data based on user department
-  const userDepartment = user?.department || '';
+  // Filter data by the student's department (would normally use context)
+  const department = 'Computer Science';
   
-  // Filter courses by department if user has a specific department
-  const filteredCourses = user?.department 
-    ? coursesData.filter(course => {
-        // For department-specific emails, filter by exact department
-        if (user.email.includes('@edu.in')) {
-          return course.department === user.department;
-        }
-        // For generic users, show all courses (or could filter by related fields)
-        return true;
-      })
-    : coursesData;
-    
-  // Filter schedule by department if appropriate
-  const filteredSchedule = user?.department && user.email.includes('@edu.in')
-    ? scheduleData.filter(item => !item.department || item.department === user.department)
-    : scheduleData;
-    
-  // Filter assignments by department if appropriate
-  const filteredAssignments = user?.department && user.email.includes('@edu.in')
-    ? assignmentsData.filter(assignment => !assignment.department || assignment.department === user.department)
-    : assignmentsData;
+  const filteredCourses = coursesData.filter(course => 
+    !course.department || course.department === department
+  );
+  
+  const filteredAssignments = assignmentsData.filter(assignment => 
+    !assignment.department || assignment.department === department
+  );
+  
+  const filteredSchedule = scheduleData.filter(item => 
+    !item.department || item.department === department
+  );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <TodaySchedule scheduleData={filteredSchedule} />
-      <div className="hidden md:block">
-        <AttendanceWidget />
-      </div>
-      <CoursesWidget coursesData={filteredCourses} />
-      <AssignmentsWidget assignmentsData={filteredAssignments} />
-      <EventsWidget eventsData={eventsData} />
-      <CafeteriaWidget menuData={cafeteriaMenuData} />
-      <NotificationsWidget notificationsData={notificationsData} />
-      <div className="md:hidden block">
-        <AttendanceWidget />
-      </div>
+    <div className="space-y-6">
+      <Tabs defaultValue="today" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="today">Today</TabsTrigger>
+          <TabsTrigger value="courses">My Courses</TabsTrigger>
+          <TabsTrigger value="assignments">Assignments</TabsTrigger>
+          <TabsTrigger value="attendance">Attendance</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="today" className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">Today's Overview</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <TodaySchedule scheduleItems={filteredSchedule} />
+            <EventsWidget events={eventsData} />
+            <CafeteriaWidget menuItems={cafeteriaMenuData} />
+            <NotificationsWidget notifications={notificationsData} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="courses" className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">My Courses</h2>
+          <CoursesWidget courses={filteredCourses} />
+        </TabsContent>
+        
+        <TabsContent value="assignments" className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">Assignments</h2>
+          <AssignmentsWidget assignments={filteredAssignments} />
+        </TabsContent>
+        
+        <TabsContent value="attendance" className="space-y-4">
+          <h2 className="text-2xl font-bold tracking-tight">My Attendance</h2>
+          <AttendanceWidget />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

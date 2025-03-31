@@ -10,7 +10,7 @@ import PageTransition from '@/components/ui/PageTransition';
 import NotificationsHeader from '@/components/notifications/NotificationsHeader';
 import NotificationsList from '@/components/notifications/NotificationsList';
 import EmptyNotifications from '@/components/notifications/EmptyNotifications';
-import { allNotificationsData, NotificationType } from '@/data/notificationsData';
+import { extendedNotificationsData, NotificationType } from '@/data/notificationsData';
 
 export default function Notifications() {
   const { user } = useAuth();
@@ -22,7 +22,7 @@ export default function Notifications() {
   useEffect(() => {
     if (user) {
       // Filter notifications based on user's role
-      const filteredNotifications = allNotificationsData.filter(notification => 
+      const filteredNotifications = extendedNotificationsData.filter(notification => 
         notification.roles.includes(user.role)
       );
       setNotifications(filteredNotifications);
