@@ -8,6 +8,7 @@ import EventsWidget from './EventsWidget';
 import CafeteriaWidget from './CafeteriaWidget';
 import NotificationsWidget from './NotificationsWidget';
 import AttendanceWidget from './AttendanceWidget';
+import { useAuth } from '@/context/AuthContext';
 import { 
   ScheduleItem, 
   Course, 
@@ -34,21 +35,20 @@ export default function StudentDashboardContent({
   cafeteriaMenuData,
   notificationsData
 }: StudentDashboardContentProps) {
+  const { user } = useAuth();
   
-  // Filter data by the student's department (would normally use context)
-  const department = 'Computer Science';
+  // Filter assignments and schedule by department, but let the CoursesWidget handle course filtering
+  const filteredAssignments = user?.department 
+    ? assignmentsData.filter(assignment => 
+        !assignment.department || assignment.department === user.department
+      )
+    : assignmentsData;
   
-  const filteredCourses = coursesData.filter(course => 
-    !course.department || course.department === department
-  );
-  
-  const filteredAssignments = assignmentsData.filter(assignment => 
-    !assignment.department || assignment.department === department
-  );
-  
-  const filteredSchedule = scheduleData.filter(item => 
-    !item.department || item.department === department
-  );
+  const filteredSchedule = user?.department
+    ? scheduleData.filter(item => 
+        !item.department || item.department === user.department
+      )
+    : scheduleData;
 
   return (
     <div className="space-y-6">
@@ -72,7 +72,7 @@ export default function StudentDashboardContent({
         
         <TabsContent value="courses" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">My Courses</h2>
-          <CoursesWidget coursesData={filteredCourses} />
+          <CoursesWidget coursesData={coursesData} />
         </TabsContent>
         
         <TabsContent value="assignments" className="space-y-4">
