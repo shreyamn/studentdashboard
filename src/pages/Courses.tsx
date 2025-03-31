@@ -12,6 +12,7 @@ import { CourseDetails } from '@/components/courses/CourseDetails';
 import { CourseTabContent } from '@/components/courses/CourseTabContent';
 import { EmptyCourses } from '@/components/courses/EmptyCourses';
 import { toast } from 'sonner';
+import { coursesData } from '@/data/coursesData';
 
 const allCoursesData = [
   {
@@ -194,43 +195,51 @@ export default function Courses() {
   const { user } = useAuth();
   const { toast: toastNotification } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [coursesData, setCoursesData] = useState([]);
+  const [displayedCourses, setDisplayedCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showAllCourses, setShowAllCourses] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      let filteredCourses = allCoursesData;
-      
-      // Only filter by department if showAllCourses is false
-      if (!showAllCourses && user.department) {
-        filteredCourses = allCoursesData.filter(
-          course => course.department === user.department
-        );
-      }
-      
-      setCoursesData(filteredCourses);
-      
-      if (filteredCourses.length > 0) {
-        setSelectedCourse(filteredCourses[0]);
-      } else {
-        setSelectedCourse(null);
+    // For initial page load, we'll use the actual coursesData from our data file
+    // This ensures we're working with the most current data
+    let filteredCourses = [];
+    
+    if (showAllCourses) {
+      // When showing all courses, use all courses regardless of department
+      filteredCourses = allCoursesData.length > 0 ? allCoursesData : coursesData;
+    } else if (user?.department) {
+      // Filter by user's department if they have one
+      filteredCourses = allCoursesData.length > 0 
+        ? allCoursesData.filter(course => course.department === user.department)
+        : coursesData.filter(course => course.department === user.department);
+    } else {
+      // If no department (or we're testing), show all courses
+      filteredCourses = allCoursesData.length > 0 ? allCoursesData : coursesData;
+    }
+    
+    setDisplayedCourses(filteredCourses);
+    
+    // Select the first course if there are any
+    if (filteredCourses.length > 0) {
+      setSelectedCourse(filteredCourses[0]);
+    } else {
+      setSelectedCourse(null);
+      if (!showAllCourses) {
         toastNotification({
           title: "No courses available",
-          description: showAllCourses 
-            ? "No courses found in the database." 
-            : `No courses found for ${user.department} department.`,
+          description: `No courses found for ${user?.department || 'your'} department.`,
           variant: "destructive",
         });
       }
     }
   }, [user, toastNotification, showAllCourses]);
 
-  const filteredCourses = coursesData.filter(
+  const filteredCourses = displayedCourses.filter(
     (course) =>
       course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.instructor.name.toLowerCase().includes(searchQuery.toLowerCase())
+      course.instructor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.instructor.toLowerCase?.includes(searchQuery.toLowerCase())
   );
 
   const toggleShowAllCourses = () => {
@@ -247,7 +256,7 @@ export default function Courses() {
           <PageTransition className="flex-1 pt-24 px-4 pb-8">
             <div className="container mx-auto">
               <CoursesHeader 
-                department={user?.department}
+                department={showAllCourses ? "All Departments" : user?.department}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
               />
@@ -261,8 +270,8 @@ export default function Courses() {
                 </button>
               </div>
 
-              {coursesData.length === 0 ? (
-                <EmptyCourses department={user?.department} />
+              {filteredCourses.length === 0 ? (
+                <EmptyCourses department={showAllCourses ? "all departments" : user?.department} />
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <CourseList 
