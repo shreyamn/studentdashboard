@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { 
   Calendar, 
@@ -21,27 +22,37 @@ export default function FacultyDashboardContent() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('today');
   
-  const teachingSchedule = [
+  // Define teaching classes data
+  const teachingClasses = [
     {
       id: 1,
-      courseName: 'Introduction to Programming',
-      timeSlot: '10:00 AM - 11:30 AM',
+      course: 'Introduction to Programming',
+      courseCode: 'CS 101',
+      day: 'Monday',
+      startTime: '10:00 AM',
+      endTime: '11:30 AM',
       location: 'Engineering Block, Room E101',
-      students: 45,
+      studentsEnrolled: 45,
     },
     {
       id: 2,
-      courseName: 'Data Structures and Algorithms',
-      timeSlot: '1:00 PM - 2:30 PM',
+      course: 'Data Structures and Algorithms',
+      courseCode: 'CS 201',
+      day: 'Tuesday',
+      startTime: '1:00 PM',
+      endTime: '2:30 PM',
       location: 'Science Block, Room S202',
-      students: 38,
+      studentsEnrolled: 38,
     },
     {
       id: 3,
-      courseName: 'Database Management Systems',
-      timeSlot: '3:00 PM - 4:30 PM',
+      course: 'Database Management Systems',
+      courseCode: 'CS 301',
+      day: 'Wednesday',
+      startTime: '3:00 PM',
+      endTime: '4:30 PM',
       location: 'Engineering Block, Room E105',
-      students: 42,
+      studentsEnrolled: 42,
     },
   ];
 
@@ -170,6 +181,9 @@ export default function FacultyDashboardContent() {
     },
   ];
 
+  // Get current day name
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="today" className="space-y-4" onValueChange={setActiveTab}>
@@ -183,7 +197,7 @@ export default function FacultyDashboardContent() {
         <TabsContent value="today" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">Today's Schedule</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <TeachingScheduleWidget schedule={teachingSchedule} />
+            <TeachingScheduleWidget classesData={teachingClasses} today={today} />
             
             <Card className="col-span-1 p-6">
               <div className="flex items-center justify-between mb-4">

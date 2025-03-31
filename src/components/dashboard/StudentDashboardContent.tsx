@@ -63,21 +63,21 @@ export default function StudentDashboardContent({
         <TabsContent value="today" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">Today's Overview</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <TodaySchedule scheduleItems={filteredSchedule} />
-            <EventsWidget events={eventsData} />
-            <CafeteriaWidget menuItems={cafeteriaMenuData} />
+            <TodaySchedule scheduleData={filteredSchedule} />
+            <EventsWidget eventsData={eventsData} />
+            <CafeteriaWidget menuData={cafeteriaMenuData} />
             <NotificationsWidget notifications={notificationsData} />
           </div>
         </TabsContent>
         
         <TabsContent value="courses" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">My Courses</h2>
-          <CoursesWidget courses={filteredCourses} />
+          <CoursesWidget coursesData={filteredCourses} />
         </TabsContent>
         
         <TabsContent value="assignments" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">Assignments</h2>
-          <AssignmentsWidget assignments={filteredAssignments} />
+          <AssignmentsWidget assignmentsData={filteredAssignments} />
         </TabsContent>
         
         <TabsContent value="attendance" className="space-y-4">
