@@ -4,9 +4,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AttendanceProvider } from "./context/AttendanceContext";
 
 // Pages
@@ -26,6 +26,23 @@ import Attendance from "./pages/Attendance";
 
 const queryClient = new QueryClient();
 
+// Component to restrict Courses page to students only
+const ProtectedCourseRoute = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+  
+  // If user is not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  // If user is faculty or staff, redirect to dashboard
+  if (user?.role === 'faculty' || user?.role === 'staff') {
+    return <Navigate to="/dashboard" />;
+  }
+  
+  return children;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -38,7 +55,14 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/courses" element={<Courses />} />
+                
+                {/* Restrict Courses page to students only */}
+                <Route path="/courses" element={
+                  <ProtectedCourseRoute>
+                    <Courses />
+                  </ProtectedCourseRoute>
+                } />
+                
                 <Route path="/map" element={<Map />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/clubs" element={<Clubs />} />

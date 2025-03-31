@@ -24,6 +24,9 @@ export function AppSidebar() {
   // Don't show sidebar on landing page or auth pages
   if (!isAuthenticated || location.pathname === '/') return null;
 
+  // Check if the user is a student (to show courses link)
+  const isStudent = user?.role === 'student';
+
   return (
     <Sidebar className="border-r border-border">
       <SidebarHeader className="p-5">
@@ -73,17 +76,20 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={location.pathname === '/courses'}
-                  asChild
-                >
-                  <Link to="/courses">
-                    <BookOpen className="h-5 w-5" />
-                    <span>Courses</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {/* Only show Courses link for students */}
+              {isStudent && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={location.pathname === '/courses'}
+                    asChild
+                  >
+                    <Link to="/courses">
+                      <BookOpen className="h-5 w-5" />
+                      <span>Courses</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               
               <SidebarMenuItem>
                 <SidebarMenuButton

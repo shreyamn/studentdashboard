@@ -34,6 +34,9 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Check if the user is a student (to show courses link)
+  const isStudent = user?.role === 'student';
+
   if (!mounted) return null;
 
   return (
@@ -115,16 +118,21 @@ export default function Navbar() {
               >
                 Dashboard
               </Link>
-              <Link
-                to="/courses"
-                className={`font-medium text-sm transition-colors hover:text-primary ${
-                  location.pathname === '/courses' 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground'
-                }`}
-              >
-                Courses
-              </Link>
+              
+              {/* Only show Courses link for students */}
+              {isStudent && (
+                <Link
+                  to="/courses"
+                  className={`font-medium text-sm transition-colors hover:text-primary ${
+                    location.pathname === '/courses' 
+                      ? 'text-primary' 
+                      : 'text-muted-foreground'
+                  }`}
+                >
+                  Courses
+                </Link>
+              )}
+              
               <Link
                 to="/map"
                 className={`font-medium text-sm transition-colors hover:text-primary ${
