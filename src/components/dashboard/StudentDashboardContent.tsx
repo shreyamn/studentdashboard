@@ -9,6 +9,7 @@ import CafeteriaWidget from './CafeteriaWidget';
 import NotificationsWidget from './NotificationsWidget';
 import AttendanceWidget from './AttendanceWidget';
 import { useAuth } from '@/context/AuthContext';
+import { Link } from 'react-router-dom';
 import { 
   ScheduleItem, 
   Course, 
@@ -17,6 +18,8 @@ import {
   MenuItem, 
   Notification 
 } from '@/data/types';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface StudentDashboardContentProps {
   scheduleData: ScheduleItem[];
@@ -72,8 +75,11 @@ export default function StudentDashboardContent({
             <div className="lg:col-span-3">
               <div className="glass-card subtle-shadow rounded-xl p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display font-medium text-lg">Your Courses (Quick View)</h2>
-                  <a href="/courses" className="text-primary text-sm hover:underline">View all courses</a>
+                  <h2 className="font-display font-medium text-lg">Your General Studies Courses</h2>
+                  <Link to="/courses" className="text-primary text-sm hover:underline flex items-center">
+                    View all courses
+                    <ArrowRight className="h-4 w-4 ml-1" />
+                  </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {topFourCourses.map(course => (
@@ -94,10 +100,27 @@ export default function StudentDashboardContent({
                               style={{ width: `${course.progress}%` }}
                             ></div>
                           </div>
+                          <div className="mt-3 flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">Attendance</span>
+                            <Link 
+                              to="/attendance" 
+                              className="text-xs text-primary hover:underline"
+                            >
+                              View
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="mt-4 flex justify-center">
+                  <Button asChild>
+                    <Link to="/courses">
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      Manage All Courses
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -109,7 +132,15 @@ export default function StudentDashboardContent({
         </TabsContent>
         
         <TabsContent value="courses" className="space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">My Courses</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold tracking-tight">My Courses</h2>
+            <Button asChild>
+              <Link to="/courses">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Manage All Courses
+              </Link>
+            </Button>
+          </div>
           <CoursesWidget coursesData={coursesData} />
         </TabsContent>
         

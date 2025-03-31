@@ -165,6 +165,32 @@ export default function StaffDashboardContent() {
     });
   };
 
+  const handleViewAll = (tabValue: string) => {
+    setActiveTab(tabValue);
+  };
+
+  const handleMarkEventReady = (eventId: number) => {
+    toast({
+      title: "Event marked as ready",
+      description: "The event setup has been marked as ready",
+    });
+  };
+
+  const handleViewBuildingIssues = (building: string) => {
+    setActiveTab('buildings');
+    toast({
+      title: `${building} selected`,
+      description: `Viewing issues for ${building}`,
+    });
+  };
+
+  const handleAssignAlert = (alertId: number) => {
+    toast({
+      title: "Alert assigned",
+      description: "This alert has been assigned to the maintenance team",
+    });
+  };
+
   // Count tasks by status
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.status === 'Completed').length;
@@ -178,7 +204,7 @@ export default function StaffDashboardContent() {
   
   return (
     <div className="space-y-6">
-      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="tasks">Today's Tasks</TabsTrigger>
@@ -290,13 +316,18 @@ export default function StaffDashboardContent() {
                   </div>
                 ))}
               </div>
+              <div className="mt-4">
+                <Button variant="outline" size="sm" onClick={() => handleViewAll('tasks')}>
+                  View all tasks
+                </Button>
+              </div>
             </AnimatedCard>
             
             {/* Latest Alerts */}
             <AnimatedCard delay={0.3}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-display font-medium text-lg">Latest Alerts</h2>
-                <Button variant="outline" size="sm" onClick={() => setActiveTab('alerts')}>
+                <Button variant="outline" size="sm" onClick={() => handleViewAll('alerts')}>
                   View all
                 </Button>
               </div>
@@ -354,7 +385,7 @@ export default function StaffDashboardContent() {
           <AnimatedCard delay={0.4}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display font-medium text-lg">Building Status Overview</h2>
-              <Button variant="outline" size="sm" onClick={() => setActiveTab('buildings')}>
+              <Button variant="outline" size="sm" onClick={() => handleViewAll('buildings')}>
                 View details
               </Button>
             </div>
@@ -376,6 +407,14 @@ export default function StaffDashboardContent() {
                     value={status.percentage} 
                     className="h-1.5" 
                   />
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full mt-2 text-xs"
+                    onClick={() => handleViewBuildingIssues(building)}
+                  >
+                    View issues
+                  </Button>
                 </div>
               ))}
             </div>
@@ -531,7 +570,7 @@ export default function StaffDashboardContent() {
                     </div>
                     
                     <div className="flex flex-col gap-2 min-w-[120px]">
-                      <Button>Mark Ready</Button>
+                      <Button onClick={() => handleMarkEventReady(event.id)}>Mark Ready</Button>
                       <Button variant="outline">View Details</Button>
                     </div>
                   </div>
@@ -673,7 +712,7 @@ export default function StaffDashboardContent() {
                     
                     <div className="flex gap-2">
                       {alert.status === 'Pending' ? (
-                        <Button>Assign Task</Button>
+                        <Button onClick={() => handleAssignAlert(alert.id)}>Assign Task</Button>
                       ) : (
                         <Button variant="outline">View Details</Button>
                       )}
