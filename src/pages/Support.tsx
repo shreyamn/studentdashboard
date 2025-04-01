@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send, User, Headphones, FileQuestion, Phone, Mail, MessageSquare } from 'lucide-react';
@@ -11,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { CurrentDateTime } from '@/components/ui/CurrentDateTime';
 import AppLayout from '@/layouts/AppLayout';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Message {
   id: number;
@@ -18,6 +18,28 @@ interface Message {
   sender: 'user' | 'support';
   timestamp: Date;
 }
+
+const supportResponses = [
+  "Hi there! How can I help you with your university experience today?",
+  "I understand that can be frustrating. Let me see what I can do to help you.",
+  "Thanks for reaching out! I'd be happy to assist with your question about the course registration.",
+  "That's a great question. Have you checked the student resources section in your dashboard?",
+  "I'm looking into this issue for you. It's definitely something we can resolve together.",
+  "I appreciate your patience. Let me connect you with the right department to get this resolved quickly.",
+  "I can see why that would be concerning. Let's look at your options here.",
+  "You're absolutely right to bring this up. Let me check what's happening with your account.",
+  "I'm here to help make your university experience better. Let's tackle this together.",
+  "Thanks for sharing that with me. I think I know exactly what might be happening here."
+];
+
+const initialMessages: Message[] = [
+  {
+    id: 1,
+    text: "Hi there! I'm Sarah from student support. How can I help you today?",
+    sender: 'support',
+    timestamp: new Date()
+  }
+];
 
 const faqData = [
   {
@@ -46,15 +68,6 @@ const faqData = [
   }
 ];
 
-const initialMessages: Message[] = [
-  {
-    id: 1,
-    text: "Hello! How can I assist you today with University Hub?",
-    sender: 'support',
-    timestamp: new Date()
-  }
-];
-
 export default function Support() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -62,8 +75,9 @@ export default function Support() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const [isTyping, setIsTyping] = useState(false);
   
-  // Auto-scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -71,7 +85,6 @@ export default function Support() {
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
     
-    // Add user message
     const userMessage: Message = {
       id: messages.length + 1,
       text: inputMessage,
@@ -82,41 +95,38 @@ export default function Support() {
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     
-    // Simulate support response after a delay
+    setIsTyping(true);
+    
     setTimeout(() => {
-      const supportResponses = [
-        "Thank you for your question. I'll look into that for you right away.",
-        "I understand. Let me help you with that issue.",
-        "That's a good question. The university policy on this matter states that students should contact their academic advisor.",
-        "I'm checking our system for that information. Please allow me a moment.",
-        "Have you tried accessing that through your student portal? That's usually the quickest way.",
-        "I'd be happy to help resolve this for you. Could you provide a bit more detail?",
-      ];
+      setIsTyping(false);
       
       const randomResponse = supportResponses[Math.floor(Math.random() * supportResponses.length)];
       
+      const supportName = user?.name ? `, ${user.name.split(' ')[0]}` : '';
+      const personalizedResponse = randomResponse.replace('Hi there!', `Hi there${supportName}!`);
+      
       const supportMessage: Message = {
         id: messages.length + 2,
-        text: randomResponse,
+        text: personalizedResponse,
         sender: 'support',
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, supportMessage]);
-    }, 1000);
+    }, 1500 + Math.random() * 1000);
   };
   
   const handleCallSupport = () => {
     toast({
       title: "Support Call Initiated",
-      description: "A support representative will call you shortly.",
+      description: "Sarah from student support will call you shortly.",
     });
   };
   
   const handleEmailSupport = () => {
     toast({
       title: "Email Sent",
-      description: "Your inquiry has been submitted. We'll respond within 24 hours.",
+      description: "Your inquiry has been submitted. Sarah will respond within 24 hours.",
     });
   };
 
@@ -139,8 +149,7 @@ export default function Support() {
         </header>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Support Options and FAQ */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className={`${isMobile && activeTab === 'chat' ? 'hidden' : 'block'} lg:col-span-1 space-y-6`}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -158,7 +167,7 @@ export default function Support() {
                   onClick={() => setActiveTab('chat')}
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
-                  Live Chat Support
+                  Live Chat with Sarah
                 </Button>
                 <Button 
                   variant="outline" 
@@ -213,7 +222,6 @@ export default function Support() {
             </Card>
           </div>
           
-          {/* Right Column: Support Content */}
           <div className="lg:col-span-2">
             <Tabs 
               defaultValue="chat" 
@@ -229,10 +237,18 @@ export default function Support() {
               <TabsContent value="chat" className="space-y-4 mt-4">
                 <Card className="border shadow-sm">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">Chat with Support</CardTitle>
-                    <CardDescription>
-                      Connected with University Hub Support
-                    </CardDescription>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src="https://ui-avatars.com/api/?name=Sarah+Support&background=6366F1&color=fff" />
+                        <AvatarFallback>SU</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="text-lg">Sarah Johnson</CardTitle>
+                        <CardDescription>
+                          Student Support Specialist
+                        </CardDescription>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col h-[400px]">
@@ -245,7 +261,7 @@ export default function Support() {
                             <div className="flex items-start max-w-[80%]">
                               {message.sender === 'support' && (
                                 <Avatar className="h-8 w-8 mr-2">
-                                  <AvatarImage src="https://ui-avatars.com/api/?name=Support&background=6366F1&color=fff" />
+                                  <AvatarImage src="https://ui-avatars.com/api/?name=Sarah+Support&background=6366F1&color=fff" />
                                   <AvatarFallback>SU</AvatarFallback>
                                 </Avatar>
                               )}
@@ -278,6 +294,23 @@ export default function Support() {
                             </div>
                           </div>
                         ))}
+                        {isTyping && (
+                          <div className="flex justify-start mb-2">
+                            <div className="flex items-start">
+                              <Avatar className="h-8 w-8 mr-2">
+                                <AvatarImage src="https://ui-avatars.com/api/?name=Sarah+Support&background=6366F1&color=fff" />
+                                <AvatarFallback>SU</AvatarFallback>
+                              </Avatar>
+                              <div className="bg-muted rounded-lg px-4 py-2">
+                                <div className="typing-indicator">
+                                  <span className="dot"></span>
+                                  <span className="dot"></span>
+                                  <span className="dot"></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <div ref={messagesEndRef} />
                       </div>
                       
@@ -327,6 +360,46 @@ export default function Support() {
           </div>
         </div>
       </motion.div>
+      
+      <style jsx global>{`
+        .typing-indicator {
+          display: flex;
+          align-items: center;
+        }
+        
+        .dot {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #888;
+          margin: 0 2px;
+          animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .dot:nth-child(1) {
+          animation-delay: 0s;
+        }
+        
+        .dot:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+          0%, 100% {
+            transform: translateY(0);
+            opacity: 0.5;
+          }
+          50% {
+            transform: translateY(-5px);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </AppLayout>
   );
 }

@@ -26,6 +26,8 @@ export function AppSidebar() {
 
   // Check if the user is a student (to show courses link)
   const isStudent = user?.role === 'student';
+  // Check if user is faculty
+  const isFaculty = user?.role === 'faculty';
 
   return (
     <Sidebar className="border-r border-border">
