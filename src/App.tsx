@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ChatbotProvider } from "./context/ChatbotContext";
+import { Chatbot } from "./components/chatbot/Chatbot";
 
 // Pages
 import Index from "./pages/Index";
@@ -46,31 +48,36 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              
-              {/* Restrict Courses page to students only */}
-              <Route path="/courses" element={
-                <ProtectedCourseRoute>
-                  <Courses />
-                </ProtectedCourseRoute>
-              } />
-              
-              <Route path="/map" element={<Map />} />
-              <Route path="/events" element={<Events />} />
-              <Route path="/clubs" element={<Clubs />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
+          <ChatbotProvider>
+            <Toaster />
+            <Sonner />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                
+                {/* Restrict Courses page to students only */}
+                <Route path="/courses" element={
+                  <ProtectedCourseRoute>
+                    <Courses />
+                  </ProtectedCourseRoute>
+                } />
+                
+                <Route path="/map" element={<Map />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/clubs" element={<Clubs />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/support" element={<Support />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AnimatePresence>
+            
+            {/* Add chatbot component that will be available throughout the app */}
+            <Chatbot />
+          </ChatbotProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

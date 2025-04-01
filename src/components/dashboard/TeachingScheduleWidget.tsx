@@ -3,6 +3,7 @@ import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import AnimatedCard from '@/components/ui/AnimatedCard';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 interface TeachingClass {
   id: number;
@@ -13,6 +14,7 @@ interface TeachingClass {
   endTime: string;
   location: string;
   studentsEnrolled: number;
+  department?: string;
 }
 
 interface TeachingScheduleWidgetProps {
@@ -21,10 +23,20 @@ interface TeachingScheduleWidgetProps {
 }
 
 export default function TeachingScheduleWidget({ classesData, today }: TeachingScheduleWidgetProps) {
-  // Filter classes for today if provided
+  const { user } = useAuth();
+  
+  // Filter classes by department if user has a department
+  let filteredClasses = classesData;
+  if (user?.department) {
+    filteredClasses = classesData.filter(cls => 
+      !cls.department || cls.department === user.department
+    );
+  }
+  
+  // Further filter classes for today if provided
   const displayClasses = today 
-    ? classesData.filter(cls => cls.day.toLowerCase() === today.toLowerCase())
-    : classesData;
+    ? filteredClasses.filter(cls => cls.day.toLowerCase() === today.toLowerCase())
+    : filteredClasses;
   
   // Get day badge color
   const getDayColor = (day: string) => {
@@ -42,7 +54,9 @@ export default function TeachingScheduleWidget({ classesData, today }: TeachingS
     <AnimatedCard delay={0.3} className="col-span-1 md:col-span-2">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-display font-medium text-lg">
-          {today ? "Today's Teaching Schedule" : "Weekly Teaching Schedule"}
+          {user?.department 
+            ? `${user.department} ${today ? "Today's" : "Weekly"} Teaching Schedule` 
+            : today ? "Today's Teaching Schedule" : "Weekly Teaching Schedule"}
         </h2>
         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
           <Calendar className="mr-1 h-3 w-3" /> {displayClasses.length} Classes
@@ -64,6 +78,11 @@ export default function TeachingScheduleWidget({ classesData, today }: TeachingS
                       <Badge variant="outline" className={getDayColor(cls.day)}>
                         {cls.day}
                       </Badge>
+                      {cls.department && (
+                        <Badge variant="secondary">
+                          {cls.department}
+                        </Badge>
+                      )}
                     </div>
                     <h3 className="font-medium">{cls.course}</h3>
                     <div className="flex items-center text-sm text-muted-foreground mt-1">
@@ -95,7 +114,11 @@ export default function TeachingScheduleWidget({ classesData, today }: TeachingS
         </div>
       ) : (
         <div className="bg-muted/50 rounded-lg p-6 text-center">
-          <p className="text-muted-foreground">No classes scheduled {today ? "today" : "this week"}.</p>
+          <p className="text-muted-foreground">
+            {user?.department 
+              ? `No ${user.department} classes scheduled ${today ? "today" : "this week"}.` 
+              : `No classes scheduled ${today ? "today" : "this week"}.`}
+          </p>
         </div>
       )}
     </AnimatedCard>
