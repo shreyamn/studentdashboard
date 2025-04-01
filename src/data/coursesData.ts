@@ -1,196 +1,164 @@
 
-import { Course } from './types';
-
-export const coursesData: Course[] = [
-  // Computer Science Courses
+// Sample courses data for different departments
+export const coursesData = [
   {
     id: 1,
-    name: 'Introduction to Computer Science',
-    code: 'CS101',
-    instructor: 'Dr. Alan Turing',
+    name: "Introduction to Computer Science",
+    code: "CS 101",
+    credits: 3,
+    department: "Computer Science",
+    instructor: {
+      name: "Dr. Alan Turing",
+      image: "https://picsum.photos/id/1005/200"
+    },
+    schedule: "Mon, Wed, Fri 10:00 AM - 11:30 AM",
+    location: "Computer Science Building, Room 305",
     progress: 75,
-    department: 'Computer Science',
-    classroom: 'CS Building 305',
-    attendancePercentage: 92,
+    status: "In Progress",
+    attendanceRate: 85,
+    assignments: [
+      {
+        title: "Programming Assignment 1",
+        due: "2023-11-20",
+        status: "Completed"
+      },
+      {
+        title: "Algorithm Analysis",
+        due: "2023-11-28",
+        status: "In Progress"
+      },
+      {
+        title: "Final Project",
+        due: "2023-12-15",
+        status: "Not Started"
+      }
+    ],
+    nextClass: {
+      day: "Monday",
+      date: "November 20, 2023",
+      time: "10:00 AM - 11:30 AM",
+      topic: "Binary Search Trees",
+      materials: ["Textbook Ch.8", "Laptop", "Completed Homework"]
+    }
   },
-  {
-    id: 5,
-    name: 'Data Structures and Algorithms',
-    code: 'CS201',
-    instructor: 'Prof. Ada Lovelace',
-    progress: 65,
-    department: 'Computer Science',
-    classroom: 'CS Building 405',
-    attendancePercentage: 85,
-  },
-  {
-    id: 9,
-    name: 'Web Development',
-    code: 'CS301',
-    instructor: 'Prof. Tim Berners-Lee',
-    progress: 50,
-    department: 'Computer Science',
-    classroom: 'CS Building 210',
-    attendancePercentage: 78,
-  },
-  {
-    id: 10,
-    name: 'Artificial Intelligence',
-    code: 'CS401',
-    instructor: 'Dr. Geoffrey Hinton',
-    progress: 30,
-    department: 'Computer Science',
-    classroom: 'CS Building 501',
-    attendancePercentage: 65,
-  },
-  
-  // Mathematics Courses
   {
     id: 2,
-    name: 'Calculus II',
-    code: 'MATH202',
-    instructor: 'Prof. Robert Miller',
+    name: "Calculus I",
+    code: "MATH 101",
+    credits: 4,
+    department: "Mathematics",
+    instructor: {
+      name: "Dr. Ada Lovelace",
+      image: "https://picsum.photos/id/1011/200"
+    },
+    schedule: "Tue, Thu 9:00 AM - 10:30 AM",
+    location: "Math Building, Room 212",
     progress: 60,
-    department: 'Mathematics',
-    classroom: 'Math Building 105',
-    attendancePercentage: 88,
+    status: "In Progress",
+    attendanceRate: 75,
+    assignments: [
+      {
+        title: "Problem Set 3",
+        due: "2023-11-22",
+        status: "Completed"
+      },
+      {
+        title: "Integration Techniques Quiz",
+        due: "2023-11-25",
+        status: "In Progress"
+      },
+      {
+        title: "Midterm Exam",
+        due: "2023-12-05",
+        status: "Not Started"
+      }
+    ],
+    nextClass: {
+      day: "Tuesday",
+      date: "November 21, 2023",
+      time: "9:00 AM - 10:30 AM",
+      topic: "Implicit Differentiation",
+      materials: ["Textbook Ch.4", "Calculator", "Graph Paper"]
+    }
   },
-  {
-    id: 6,
-    name: 'Advanced Calculus',
-    code: 'MATH301',
-    instructor: 'Dr. Katherine Johnson',
-    progress: 55,
-    department: 'Mathematics',
-    classroom: 'Math Building 201',
-    attendancePercentage: 75,
-  },
-  {
-    id: 11,
-    name: 'Linear Algebra',
-    code: 'MATH204',
-    instructor: 'Prof. Isaac Newton',
-    progress: 70,
-    department: 'Mathematics',
-    classroom: 'Math Building 110',
-    attendancePercentage: 90,
-  },
-  {
-    id: 12,
-    name: 'Differential Equations',
-    code: 'MATH302',
-    instructor: 'Dr. Emmy Noether',
-    progress: 45,
-    department: 'Mathematics',
-    classroom: 'Math Building 205',
-    attendancePercentage: 82,
-  },
-  
-  // Biology Courses
-  {
-    id: 7,
-    name: 'Cell Biology',
-    code: 'BIO201',
-    instructor: 'Dr. Francis Crick',
-    progress: 70,
-    department: 'Biology',
-    classroom: 'Science Building 201',
-    attendancePercentage: 87,
-  },
-  {
-    id: 13,
-    name: 'Genetics',
-    code: 'BIO301',
-    instructor: 'Dr. Gregor Mendel',
-    progress: 65,
-    department: 'Biology',
-    classroom: 'Science Building 301',
-    attendancePercentage: 79,
-  },
-  {
-    id: 14,
-    name: 'Ecology',
-    code: 'BIO205',
-    instructor: 'Dr. Rachel Carson',
-    progress: 80,
-    department: 'Biology',
-    classroom: 'Science Building 205',
-    attendancePercentage: 94,
-  },
-  {
-    id: 15,
-    name: 'Human Anatomy',
-    code: 'BIO210',
-    instructor: 'Dr. Elizabeth Blackwell',
-    progress: 75,
-    department: 'Biology',
-    classroom: 'Science Building 210',
-    attendancePercentage: 91,
-  },
-  
-  // Nursing Courses
-  {
-    id: 8,
-    name: 'Nursing Fundamentals',
-    code: 'NURS101',
-    instructor: 'Dr. Florence Nightingale',
-    progress: 80,
-    department: 'Nursing',
-    classroom: 'Nursing Building 201',
-    attendancePercentage: 96,
-  },
-  {
-    id: 16,
-    name: 'Pharmacology',
-    code: 'NURS205',
-    instructor: 'Dr. Clara Barton',
-    progress: 60,
-    department: 'Nursing',
-    classroom: 'Nursing Building 205',
-    attendancePercentage: 87,
-  },
-  {
-    id: 17,
-    name: 'Medical-Surgical Nursing',
-    code: 'NURS301',
-    instructor: 'Dr. Virginia Henderson',
-    progress: 70,
-    department: 'Nursing',
-    classroom: 'Nursing Building 301',
-    attendancePercentage: 93,
-  },
-  {
-    id: 18,
-    name: 'Pediatric Nursing',
-    code: 'NURS310',
-    instructor: 'Dr. Martha Rogers',
-    progress: 55,
-    department: 'Nursing',
-    classroom: 'Nursing Building 310',
-    attendancePercentage: 84,
-  },
-  
-  // Physics Courses (kept for reference)
   {
     id: 3,
-    name: 'Physics for Engineers',
-    code: 'PHYS205',
-    instructor: 'Dr. Marie Curie',
-    progress: 85,
-    department: 'Physics',
-    classroom: 'Physics Building 205',
-    attendancePercentage: 89,
+    name: "Human Anatomy",
+    code: "BIO 201",
+    credits: 4,
+    department: "Biology",
+    instructor: {
+      name: "Dr. Jane Goodall",
+      image: "https://picsum.photos/id/1027/200"
+    },
+    schedule: "Mon, Wed 1:00 PM - 3:00 PM",
+    location: "Science Center, Room 115",
+    progress: 80,
+    status: "In Progress",
+    attendanceRate: 90,
+    assignments: [
+      {
+        title: "Lab Report: Skeletal System",
+        due: "2023-11-19",
+        status: "Completed"
+      },
+      {
+        title: "Organ Systems Quiz",
+        due: "2023-11-24",
+        status: "In Progress"
+      },
+      {
+        title: "Final Exam",
+        due: "2023-12-10",
+        status: "Not Started"
+      }
+    ],
+    nextClass: {
+      day: "Wednesday",
+      date: "November 22, 2023",
+      time: "1:00 PM - 3:00 PM",
+      topic: "Cardiovascular System",
+      materials: ["Lab Manual", "Dissection Kit", "Notebook"]
+    }
   },
-  
-  // Psychology Courses (kept for reference)
   {
     id: 4,
-    name: 'Introduction to Psychology',
-    code: 'PSYC101',
-    instructor: 'Dr. Sigmund Freud',
-    progress: 40,
-    department: 'Psychology',
-    classroom: 'Psychology Building 101',
-    attendancePercentage: 77,
-  },
+    name: "Fundamentals of Nursing",
+    code: "NURS 101",
+    credits: 5,
+    department: "Nursing",
+    instructor: {
+      name: "Dr. Florence Nightingale",
+      image: "https://picsum.photos/id/1000/200"
+    },
+    schedule: "Tue, Thu 8:00 AM - 11:00 AM",
+    location: "Health Sciences Building, Room 401",
+    progress: 70,
+    status: "In Progress",
+    attendanceRate: 95,
+    assignments: [
+      {
+        title: "Patient Care Plan",
+        due: "2023-11-21",
+        status: "Completed"
+      },
+      {
+        title: "Medication Administration Exam",
+        due: "2023-11-30",
+        status: "Not Started"
+      },
+      {
+        title: "Clinical Rotation Report",
+        due: "2023-12-08",
+        status: "Not Started"
+      }
+    ],
+    nextClass: {
+      day: "Thursday",
+      date: "November 23, 2023",
+      time: "8:00 AM - 11:00 AM",
+      topic: "Vital Signs Assessment",
+      materials: ["Nursing Manual", "Stethoscope", "Blood Pressure Cuff"]
+    }
+  }
 ];

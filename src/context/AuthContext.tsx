@@ -1,273 +1,159 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+
+// Define user types with proper properties
 interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
-  role: 'student' | 'faculty' | 'staff' | 'admin';
-  department?: string;
-  year?: number;
-  profileImage?: string;
+  role: 'student' | 'faculty' | 'staff';
+  department?: string; // For students and faculty
+  chore?: string;      // For staff
+  image?: string;
 }
+
+// Mock users data
+const mockUsers: User[] = [
+  {
+    id: 1,
+    name: 'John Student',
+    email: 'john.student@university.edu',
+    role: 'student',
+    department: 'Computer Science',
+    image: 'https://picsum.photos/id/1005/200'
+  },
+  {
+    id: 2,
+    name: 'Emma Faculty',
+    email: 'emma.faculty@faculty.university.edu',
+    role: 'faculty',
+    department: 'Computer Science',
+    image: 'https://picsum.photos/id/1011/200'
+  },
+  {
+    id: 3,
+    name: 'Mike Staff',
+    email: 'mike.staff@staff.university.edu',
+    role: 'staff',
+    chore: 'Events',
+    image: 'https://picsum.photos/id/1012/200'
+  }
+];
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (
-    name: string, 
-    email: string, 
-    password: string, 
-    role: 'student' | 'faculty' | 'staff'
-  ) => Promise<void>;
   logout: () => void;
-  updateProfileImage: (imageUrl: string) => void;
+  register: (userData: Partial<User> & { password: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Sample user data for demonstration
-const MOCK_USERS = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@university.edu',
-    password: 'password123',
-    role: 'student',
-    department: 'Computer Science',
-    year: 3,
-    profileImage: 'https://i.pravatar.cc/150?img=1',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@university.edu',
-    password: 'password123',
-    role: 'faculty',
-    department: 'Mathematics',
-    profileImage: 'https://i.pravatar.cc/150?img=2',
-  },
-  {
-    id: '3',
-    name: 'Robert Johnson',
-    email: 'robert@university.edu',
-    password: 'password123',
-    role: 'staff',
-    department: 'Facilities Management',
-    profileImage: 'https://i.pravatar.cc/150?img=3',
-  },
-  {
-    id: '4',
-    name: 'CS Student',
-    email: 'usernameCS@edu.in',
-    password: 'password123',
-    role: 'student',
-    department: 'Computer Science',
-    year: 2,
-    profileImage: 'https://i.pravatar.cc/150?img=4',
-  },
-  {
-    id: '5',
-    name: 'Math Student',
-    email: 'usernameM@edu.in',
-    password: 'password123',
-    role: 'student',
-    department: 'Mathematics',
-    year: 3,
-    profileImage: 'https://i.pravatar.cc/150?img=5',
-  },
-  {
-    id: '6',
-    name: 'Biology Student',
-    email: 'usernameB@edu.in',
-    password: 'password123',
-    role: 'student',
-    department: 'Biology',
-    year: 2,
-    profileImage: 'https://i.pravatar.cc/150?img=6',
-  },
-  {
-    id: '7',
-    name: 'Nursing Student',
-    email: 'usernameN@edu.in',
-    password: 'password123',
-    role: 'student',
-    department: 'Nursing',
-    year: 1,
-    profileImage: 'https://i.pravatar.cc/150?img=7',
-  },
-  {
-    id: '8',
-    name: 'CS Professor',
-    email: 'usernamefacultyCS@edu.in',
-    password: 'password123',
-    role: 'faculty',
-    department: 'Computer Science',
-    profileImage: 'https://i.pravatar.cc/150?img=8',
-  },
-  {
-    id: '9',
-    name: 'Math Professor',
-    email: 'usernamefacultyM@edu.in',
-    password: 'password123',
-    role: 'faculty',
-    department: 'Mathematics',
-    profileImage: 'https://i.pravatar.cc/150?img=9',
-  },
-  {
-    id: '10',
-    name: 'Biology Professor',
-    email: 'usernamefacultyB@edu.in',
-    password: 'password123',
-    role: 'faculty',
-    department: 'Biology',
-    profileImage: 'https://i.pravatar.cc/150?img=10',
-  },
-  {
-    id: '11',
-    name: 'Nursing Professor',
-    email: 'usernamefacultyN@edu.in',
-    password: 'password123',
-    role: 'faculty',
-    department: 'Nursing',
-    profileImage: 'https://i.pravatar.cc/150?img=11',
-  },
-  {
-    id: '12',
-    name: 'Cleaning Staff',
-    email: 'usernamestaffC@edu.in',
-    password: 'password123',
-    role: 'staff',
-    department: 'Facilities Management - Cleaning',
-    profileImage: 'https://i.pravatar.cc/150?img=12',
-  },
-  {
-    id: '13',
-    name: 'Events Staff',
-    email: 'usernamestaffE@edu.in',
-    password: 'password123',
-    role: 'staff',
-    department: 'Events Management',
-    profileImage: 'https://i.pravatar.cc/150?img=13',
-  },
-];
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Check for existing session
-    const storedUser = localStorage.getItem('campusAppUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    
-    // Simulate API call with timeout
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        const user = MOCK_USERS.find(
-          (u) => u.email === email && u.password === password
-        );
-        
-        if (user) {
-          // Remove the password before storing user data
-          const { password, ...userWithoutPassword } = user;
-          setUser(userWithoutPassword as User);
-          localStorage.setItem('campusAppUser', JSON.stringify(userWithoutPassword));
-          setIsLoading(false);
-          resolve();
-        } else {
-          setIsLoading(false);
-          reject(new Error('Invalid email or password'));
-        }
-      }, 1000);
-    });
-  };
-
-  const register = async (
-    name: string, 
-    email: string, 
-    password: string, 
-    role: 'student' | 'faculty' | 'staff'
-  ) => {
-    setIsLoading(true);
-    
-    // Simulate API call with timeout
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        // Check if user already exists
-        const existingUser = MOCK_USERS.find((u) => u.email === email);
-        
-        if (existingUser) {
-          setIsLoading(false);
-          reject(new Error('User with this email already exists'));
-          return;
-        }
-        
-        // Create new user (in a real app, this would be done server-side)
-        const newUser = {
-          id: Math.random().toString(36).substring(2, 9),
-          name,
-          email,
-          role,
-          department: role === 'staff' ? 'Facilities Management' : 
-                      role === 'faculty' ? 'General Faculty' : 'General Studies',
-          profileImage: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`,
-        };
-        
-        // Set as current user
-        setUser(newUser);
-        localStorage.setItem('campusAppUser', JSON.stringify(newUser));
-        setIsLoading(false);
-        resolve();
-      }, 1000);
-    });
-  };
-
-  const updateProfileImage = (imageUrl: string) => {
-    if (user) {
-      const updatedUser = {
-        ...user,
-        profileImage: imageUrl
-      };
-      setUser(updatedUser);
-      localStorage.setItem('campusAppUser', JSON.stringify(updatedUser));
-    }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('campusAppUser');
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout,
-        updateProfileImage,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const navigate = useNavigate();
+  
+  // Check for existing session on load
+  useEffect(() => {
+    const storedUser = localStorage.getItem('university_hub_user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setIsAuthenticated(true);
+    }
+  }, []);
+  
+  // Login function
+  const login = async (email: string, password: string) => {
+    // Mock authentication
+    const foundUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (!foundUser) {
+      throw new Error('Invalid email or password');
+    }
+    
+    // In a real app, you'd verify password here
+    // For demo, we'll accept any password
+    
+    // Save to local storage
+    localStorage.setItem('university_hub_user', JSON.stringify(foundUser));
+    
+    // Update state
+    setUser(foundUser);
+    setIsAuthenticated(true);
+    
+    return Promise.resolve();
+  };
+  
+  // Logout function
+  const logout = () => {
+    localStorage.removeItem('university_hub_user');
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate('/login');
+  };
+  
+  // Register function
+  const register = async (userData: Partial<User> & { password: string }) => {
+    // Check if email exists
+    const emailExists = mockUsers.some(
+      u => u.email.toLowerCase() === userData.email?.toLowerCase()
+    );
+    
+    if (emailExists) {
+      throw new Error('Email already in use');
+    }
+    
+    // Create new user
+    const newUser: User = {
+      id: mockUsers.length + 1,
+      name: userData.name || '',
+      email: userData.email || '',
+      role: userData.role as 'student' | 'faculty' | 'staff',
+      ...(userData.department && { department: userData.department }),
+      ...(userData.chore && { chore: userData.chore }),
+      image: 'https://picsum.photos/id/1019/200' // Default profile image
+    };
+    
+    // In a real app, you'd save to database and hash password
+    // For demo, we'll just add to mock data
+    mockUsers.push(newUser);
+    
+    // Save to local storage & update state
+    localStorage.setItem('university_hub_user', JSON.stringify(newUser));
+    setUser(newUser);
+    setIsAuthenticated(true);
+    
+    return Promise.resolve();
+  };
+  
+  const authContextValue: AuthContextType = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    register
+  };
+  
+  return (
+    <AuthContext.Provider value={authContextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

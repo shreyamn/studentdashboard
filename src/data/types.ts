@@ -1,21 +1,15 @@
 
-// Common types used across dashboard data files
-export interface Notification {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  type: "warning" | "info" | "success" | "alert";
-}
+// Type definitions for the university hub app
 
 export interface ScheduleItem {
   id: number;
-  course?: string;
-  name?: string;
+  courseCode: string;
+  courseName: string;
   startTime: string;
   endTime: string;
   location: string;
-  department?: string;
+  instructor: string;
+  type: string;
 }
 
 export interface Course {
@@ -24,9 +18,9 @@ export interface Course {
   code: string;
   instructor: string;
   progress: number;
+  classroom?: string;
   department?: string;
-  classroom?: string; 
-  attendancePercentage?: number; // Add attendance percentage
+  attendancePercentage?: number;
 }
 
 export interface Assignment {
@@ -41,13 +35,41 @@ export interface Assignment {
 export interface Event {
   id: number;
   title: string;
-  location: string;
   date: string;
   time: string;
+  location: string;
 }
 
 export interface MenuItem {
   id: number;
   meal: string;
   items: string[];
+}
+
+export interface Notification {
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  type: string;
+}
+
+export interface FacultyChore {
+  id: number;
+  title: string;
+  description: string;
+  deadline: string;
+  priority: string;
+  department: string;
+  type: string;
+}
+
+export interface StaffChore {
+  id: number;
+  title: string;
+  description: string;
+  deadline: string;
+  priority: string;
+  department: string;
+  assignedTo: string;
 }

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Calendar, 
@@ -13,6 +12,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TeachingScheduleWidget from './TeachingScheduleWidget';
 import NotificationsWidget from './NotificationsWidget';
+import FacultyChoresWidget from './FacultyChoresWidget';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -240,6 +240,8 @@ export default function FacultyDashboardContent() {
               </div>
             </Card>
           </div>
+          
+          <FacultyChoresWidget />
         </TabsContent>
         
         <TabsContent value="upcoming" className="space-y-4">
