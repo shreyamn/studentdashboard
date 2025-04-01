@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
+import Layout from '../components/layout/Sidebar';
 import { CoursesHeader } from '../components/courses/CoursesHeader';
 import { CourseContent } from '../components/courses/CourseContent';
 import { DepartmentToggle } from '../components/courses/DepartmentToggle';
