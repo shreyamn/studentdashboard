@@ -100,6 +100,11 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+  
+  // Handle role change with the correct type
+  const handleRoleChange = (value: 'student' | 'faculty' | 'staff') => {
+    setRole(value);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
@@ -163,7 +168,7 @@ const Register = () => {
               <Label>I am a...</Label>
               <RadioGroup 
                 value={role} 
-                onValueChange={setRole}
+                onValueChange={handleRoleChange}
                 className="grid grid-cols-3 gap-2"
               >
                 <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-gray-50">

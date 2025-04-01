@@ -11,6 +11,11 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
+  // Format instructor display based on type
+  const instructorDisplay = typeof course.instructor === 'string' 
+    ? course.instructor
+    : course.instructor.name;
+    
   return (
     <motion.div 
       whileHover={{ y: -5 }}
@@ -21,7 +26,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <div>
           <Badge variant="outline" className="mb-2">{course.code}</Badge>
           <h3 className="font-medium">{course.name}</h3>
-          <p className="text-sm text-muted-foreground">{course.instructor}</p>
+          <p className="text-sm text-muted-foreground">{instructorDisplay}</p>
           {course.classroom && (
             <p className="text-xs flex items-center text-muted-foreground mt-1">
               <MapPin className="h-3 w-3 mr-1" />

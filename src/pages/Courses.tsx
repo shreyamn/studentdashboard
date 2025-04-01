@@ -30,6 +30,7 @@ const Courses = () => {
     if (searchQuery.trim() !== '') {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(course => {
+        // Handle instructor being either string or object
         const instructorName = typeof course.instructor === 'string' 
           ? course.instructor.toLowerCase()
           : course.instructor.name.toLowerCase();

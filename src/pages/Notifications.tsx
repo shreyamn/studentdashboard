@@ -11,23 +11,12 @@ import NotificationsHeader from '@/components/notifications/NotificationsHeader'
 import NotificationsList from '@/components/notifications/NotificationsList';
 import EmptyNotifications from '@/components/notifications/EmptyNotifications';
 import { extendedNotificationsData } from '@/data/notificationsData';
-import { Notification } from '@/data/types';
-
-// Define a type that matches what the NotificationItem component expects
-type ComponentNotificationType = {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  type: "info" | "success" | "warning" | "alert";
-  read?: boolean;
-  roles?: string[];
-};
+import { ComponentNotificationType, NotificationType } from '@/data/types';
 
 export default function Notifications() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<ComponentNotificationType[]>([]);
   const [showAll, setShowAll] = useState(true);
   const [displayCount, setDisplayCount] = useState(5);
 
@@ -40,17 +29,6 @@ export default function Notifications() {
       setNotifications(filteredNotifications);
     }
   }, [user]);
-
-  // Convert our notifications to the type expected by the components
-  const convertToComponentType = (notification: Notification): ComponentNotificationType => {
-    return {
-      ...notification,
-      // Ensure type is one of the allowed values
-      type: (notification.type as "info" | "success" | "warning" | "alert") || "info",
-    };
-  };
-
-  const componentNotifications = notifications.map(convertToComponentType);
 
   const handleMarkAsRead = (id: number) => {
     setNotifications(notifications.map(notification => 
@@ -89,8 +67,8 @@ export default function Notifications() {
   };
 
   const displayedNotifications = showAll 
-    ? componentNotifications 
-    : componentNotifications.slice(0, displayCount);
+    ? notifications 
+    : notifications.slice(0, displayCount);
 
   return (
     <SidebarProvider>
@@ -114,7 +92,7 @@ export default function Notifications() {
                   <EmptyNotifications />
                 ) : (
                   <NotificationsList
-                    notifications={componentNotifications}
+                    notifications={notifications}
                     displayedNotifications={displayedNotifications}
                     showAll={showAll}
                     displayCount={displayCount}

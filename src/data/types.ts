@@ -73,7 +73,7 @@ export interface Notification {
   title: string;
   description: string;
   time: string;
-  type: string;
+  type: "info" | "success" | "warning" | "alert";
   read?: boolean;
   roles?: string[];
   course?: string;
@@ -87,6 +87,7 @@ export interface ComponentNotificationType {
   type: "info" | "success" | "warning" | "alert";
   read?: boolean;
   roles?: string[];
+  course?: string;
 }
 
 export interface FacultyChore {
@@ -124,6 +125,4 @@ export interface AttendanceStats {
   presentPercentage: number;
 }
 
-export interface NotificationType extends ComponentNotificationType {
-  course?: string;
-}
+export type NotificationType = ComponentNotificationType;

@@ -54,90 +54,97 @@ export default function CoursesList({ courses }: CoursesListProps) {
       </div>
       
       <div className="grid grid-cols-1 gap-4">
-        {filteredCourses.map((course) => (
-          <div key={course.id} className="bg-background rounded-lg p-4 border border-border">
-            <div className="flex flex-col">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <p className="text-xs text-muted-foreground">{course.code}</p>
-                  <h3 className="font-medium">{course.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Instructor: {course.instructor}</p>
-                  {course.classroom && (
-                    <p className="text-xs flex items-center text-muted-foreground mt-1">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      Classroom: {course.classroom}
-                    </p>
-                  )}
+        {filteredCourses.map((course) => {
+          // Format instructor display based on type
+          const instructorDisplay = typeof course.instructor === 'string' 
+            ? course.instructor
+            : course.instructor.name;
+            
+          return (
+            <div key={course.id} className="bg-background rounded-lg p-4 border border-border">
+              <div className="flex flex-col">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <p className="text-xs text-muted-foreground">{course.code}</p>
+                    <h3 className="font-medium">{course.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Instructor: {instructorDisplay}</p>
+                    {course.classroom && (
+                      <p className="text-xs flex items-center text-muted-foreground mt-1">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        Classroom: {course.classroom}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-              
-              <div className="mt-4">
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span>Course Progress</span>
-                  <span className="font-medium">{course.progress}%</span>
-                </div>
-                <div className="w-full bg-secondary h-1.5 rounded-full">
-                  <div 
-                    className="bg-primary h-1.5 rounded-full" 
-                    style={{ width: `${course.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              {/* Add attendance section */}
-              {course.attendancePercentage !== undefined && (
-                <div className="mt-3">
+                
+                <div className="mt-4">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="flex items-center">
-                      <Users className="h-3 w-3 mr-1" />
-                      Attendance
-                    </span>
-                    <span className="font-medium">{course.attendancePercentage}%</span>
+                    <span>Course Progress</span>
+                    <span className="font-medium">{course.progress}%</span>
                   </div>
                   <div className="w-full bg-secondary h-1.5 rounded-full">
                     <div 
-                      className="bg-primary/80 h-1.5 rounded-full" 
-                      style={{ width: `${course.attendancePercentage}%` }}
+                      className="bg-primary h-1.5 rounded-full" 
+                      style={{ width: `${course.progress}%` }}
                     ></div>
                   </div>
                 </div>
-              )}
-              
-              <div className="flex justify-between items-center mt-4">
-                <Link 
-                  to="/courses" 
-                  className="text-primary text-sm hover:underline flex items-center"
-                  onClick={handleViewCourse}
-                >
-                  <BookOpen className="mr-1 h-4 w-4" />
-                  View course
-                </Link>
                 
-                <Link 
-                  to="/attendance" 
-                  className="text-primary text-sm hover:underline flex items-center"
-                  onClick={handleTrackAttendance}
-                >
-                  <Users className="mr-1 h-4 w-4" />
-                  Track attendance
-                </Link>
-              </div>
-              
-              {course.classroom && (
-                <div className="mt-2 flex justify-end">
+                {/* Add attendance section */}
+                {course.attendancePercentage !== undefined && (
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="flex items-center">
+                        <Users className="h-3 w-3 mr-1" />
+                        Attendance
+                      </span>
+                      <span className="font-medium">{course.attendancePercentage}%</span>
+                    </div>
+                    <div className="w-full bg-secondary h-1.5 rounded-full">
+                      <div 
+                        className="bg-primary/80 h-1.5 rounded-full" 
+                        style={{ width: `${course.attendancePercentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center mt-4">
                   <Link 
-                    to="/map" 
+                    to="/courses" 
                     className="text-primary text-sm hover:underline flex items-center"
-                    onClick={() => handleLocateOnMap(course.classroom!)}
+                    onClick={handleViewCourse}
                   >
-                    <MapPin className="mr-1 h-4 w-4" />
-                    Locate on map
+                    <BookOpen className="mr-1 h-4 w-4" />
+                    View course
+                  </Link>
+                  
+                  <Link 
+                    to="/attendance" 
+                    className="text-primary text-sm hover:underline flex items-center"
+                    onClick={handleTrackAttendance}
+                  >
+                    <Users className="mr-1 h-4 w-4" />
+                    Track attendance
                   </Link>
                 </div>
-              )}
+                
+                {course.classroom && (
+                  <div className="mt-2 flex justify-end">
+                    <Link 
+                      to="/map" 
+                      className="text-primary text-sm hover:underline flex items-center"
+                      onClick={() => handleLocateOnMap(course.classroom!)}
+                    >
+                      <MapPin className="mr-1 h-4 w-4" />
+                      Locate on map
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       
       <div className="mt-6 flex justify-center">

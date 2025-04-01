@@ -4,23 +4,13 @@ import { AlertCircle, Bell, BookOpen, Calendar, CheckCircle, Clock, FileText, In
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-
-export interface NotificationType {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  type: 'alert' | 'warning' | 'info' | 'success';
-  course: string | null;
-  read: boolean;
-  roles: string[];
-}
+import { ComponentNotificationType } from '@/data/types';
 
 interface NotificationItemProps {
-  notification: NotificationType;
+  notification: ComponentNotificationType;
   onMarkAsRead: (id: number) => void;
   onDismiss: (id: number) => void;
-  onViewDetails: (notification: NotificationType) => void;
+  onViewDetails: (notification: ComponentNotificationType) => void;
 }
 
 const NotificationItem: React.FC<NotificationItemProps> = ({
@@ -44,7 +34,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     }
   };
 
-  const getSecondaryIcon = (notification: NotificationType) => {
+  const getSecondaryIcon = (notification: ComponentNotificationType) => {
     if (notification.course) {
       return <BookOpen className="h-4 w-4" />;
     }

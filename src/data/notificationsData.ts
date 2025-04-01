@@ -1,5 +1,5 @@
 
-import { Notification } from './types';
+import { Notification, ComponentNotificationType } from './types';
 
 // Export notification data for student dashboard
 export const notificationsData: Notification[] = [
@@ -59,15 +59,8 @@ export const allNotificationsData: Notification[] = [
   },
 ];
 
-// Type for notification items in the Notifications page
-export type NotificationType = Notification & {
-  course: string | null;
-  read: boolean;
-  roles: string[];
-};
-
 // Extended notifications data with additional fields for the Notifications page
-export const extendedNotificationsData: NotificationType[] = allNotificationsData.map(notification => ({
+export const extendedNotificationsData: ComponentNotificationType[] = allNotificationsData.map(notification => ({
   ...notification,
   course: notification.id % 3 === 0 ? 'CS101' : (notification.id % 2 === 0 ? 'MATH202' : null),
   read: false,
