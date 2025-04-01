@@ -2,24 +2,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-
-// Define user types with proper properties
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: 'student' | 'faculty' | 'staff';
-  department?: string; // For students and faculty
-  chore?: string;      // For staff
-  image?: string;
-  profileImage?: string;
-  year?: number;
-}
+import { User, AuthContextType } from '@/data/types';
 
 // Mock users data
 const mockUsers: User[] = [
   {
-    id: 1,
+    id: "1",
     name: 'John Student',
     email: 'john.student@university.edu',
     role: 'student',
@@ -29,7 +17,7 @@ const mockUsers: User[] = [
     year: 2
   },
   {
-    id: 2,
+    id: "2",
     name: 'Emma Faculty',
     email: 'emma.faculty@faculty.university.edu',
     role: 'faculty',
@@ -38,7 +26,7 @@ const mockUsers: User[] = [
     profileImage: 'https://picsum.photos/id/1011/200'
   },
   {
-    id: 3,
+    id: "3",
     name: 'Mike Staff',
     email: 'mike.staff@staff.university.edu',
     role: 'staff',
@@ -47,15 +35,6 @@ const mockUsers: User[] = [
     profileImage: 'https://picsum.photos/id/1012/200'
   }
 ];
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  register: (userData: Partial<User> & { password: string }) => Promise<void>;
-  updateProfileImage?: (imageUrl: string) => void;
-}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -129,10 +108,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     // Create new user
     const newUser: User = {
-      id: mockUsers.length + 1,
+      id: String(mockUsers.length + 1),
       name: userData.name || '',
       email: userData.email || '',
-      role: userData.role as 'student' | 'faculty' | 'staff',
+      role: userData.role || 'student',
       ...(userData.department && { department: userData.department }),
       ...(userData.chore && { chore: userData.chore }),
       profileImage: 'https://picsum.photos/id/1019/200', // Default profile image

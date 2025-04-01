@@ -1,90 +1,82 @@
-
-import React, { useState, useEffect } from 'react';
-import { AppSidebar } from '../components/layout/Sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import Navbar from '@/components/layout/Navbar';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import CoursesHeader from '@/components/courses/CoursesHeader';
+import CourseList from '@/components/courses/CourseList';
+import EmptyCourses from '@/components/courses/EmptyCourses';
+import DepartmentToggle from '@/components/courses/DepartmentToggle';
+import CourseDetails from '@/components/courses/CourseDetails';
 import PageTransition from '@/components/ui/PageTransition';
-import { CoursesHeader } from '../components/courses/CoursesHeader';
-import { CourseContent } from '../components/courses/CourseContent';
-import { DepartmentToggle } from '../components/courses/DepartmentToggle';
-import { useAuth } from '../context/AuthContext';
-import { coursesData } from '../data/coursesData';
+import { useAuth } from '@/context/AuthContext';
+import { coursesData } from '@/data/coursesData';
+import { Course } from '@/data/types';
 
-const Courses = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredCourses, setFilteredCourses] = useState(coursesData);
-  const [selectedCourse, setSelectedCourse] = useState(coursesData[0] || null);
-  const [showAllCourses, setShowAllCourses] = useState(false);
+export default function Courses() {
   const { user } = useAuth();
-
-  useEffect(() => {
-    // Filter courses based on search query and department
-    let filtered = coursesData;
-    
-    // Filter by user's department if not showing all courses
-    if (user?.department && !showAllCourses) {
-      filtered = filtered.filter(course => course.department === user.department);
-    }
-    
-    // Filter by search query
-    if (searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(course => {
-        // Handle instructor being either string or object
-        const instructorName = typeof course.instructor === 'string' 
-          ? course.instructor.toLowerCase()
-          : course.instructor.name.toLowerCase();
-          
-        return course.name.toLowerCase().includes(query) || 
-          course.code.toLowerCase().includes(query) ||
-          instructorName.includes(query);
-      });
-    }
-    
-    setFilteredCourses(filtered);
-    
-    // Update selected course if it's not in the filtered list
-    if (filtered.length > 0 && !filtered.find(course => course.id === selectedCourse?.id)) {
-      setSelectedCourse(filtered[0]);
-    }
-  }, [searchQuery, user?.department, showAllCourses, selectedCourse?.id]);
-
-  const toggleShowAllCourses = () => {
-    setShowAllCourses(!showAllCourses);
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(user?.department || null);
+  
+  // Filter courses based on department and search term
+  const filteredCourses = coursesData.filter((course) => {
+    const matchesDepartment = !selectedDepartment || course.department === selectedDepartment;
+    const matchesSearch = !searchTerm || 
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      (course.code && course.code.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesDepartment && matchesSearch;
+  });
+  
+  const handleCourseSelect = (course: Course) => {
+    setSelectedCourse(course);
+  };
+  
+  const handleBackToList = () => {
+    setSelectedCourse(null);
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <div className="flex-1 flex flex-col">
-          <Navbar />
-          <PageTransition className="flex-1 pt-24 px-4 pb-8">
-            <div className="container mx-auto py-8">
-              <CoursesHeader 
-                department={!showAllCourses && user?.department ? user.department : undefined} 
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-              
-              <DepartmentToggle 
-                showAllCourses={showAllCourses}
-                toggleShowAllCourses={toggleShowAllCourses}
-              />
-              
-              <CourseContent 
-                filteredCourses={filteredCourses}
-                selectedCourse={selectedCourse}
-                setSelectedCourse={setSelectedCourse}
-                department={!showAllCourses ? user?.department : undefined}
-                showAllCourses={showAllCourses}
-              />
-            </div>
-          </PageTransition>
+    <PageTransition>
+      <div className="container relative pt-6">
+        <CoursesHeader />
+
+        <div className="md:grid md:grid-cols-[220px_1fr] md:gap-4">
+          <aside className="hidden md:block">
+            <DepartmentToggle
+              selectedDepartment={selectedDepartment}
+              onDepartmentChange={setSelectedDepartment}
+            />
+          </aside>
+
+          <div className="w-full">
+            <Card className="mb-4">
+              <CardContent className="p-4">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search courses..."
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {selectedCourse ? (
+              <CourseDetails course={selectedCourse} onBackToList={handleBackToList} />
+            ) : filteredCourses.length > 0 ? (
+              <CourseList courses={filteredCourses} onCourseSelect={handleCourseSelect} />
+            ) : (
+              <EmptyCourses searchTerm={searchTerm} />
+            )}
+          </div>
         </div>
       </div>
-    </SidebarProvider>
+    </PageTransition>
   );
-};
-
-export default Courses;
+}

@@ -16,7 +16,7 @@ export interface ScheduleItem {
 }
 
 export interface User {
-  id: number | string;
+  id: string | number;
   name: string;
   email: string;
   role: "student" | "faculty" | "staff";

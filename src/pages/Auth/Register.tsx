@@ -102,8 +102,8 @@ const Register = () => {
   };
   
   // Handle role change with the correct type
-  const handleRoleChange = (value: 'student' | 'faculty' | 'staff') => {
-    setRole(value);
+  const handleRoleChange = (value: string) => {
+    setRole(value as 'student' | 'faculty' | 'staff');
   };
 
   return (

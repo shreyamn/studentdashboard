@@ -2,16 +2,17 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import NotificationItem, { NotificationType } from './NotificationItem';
+import NotificationItem from './NotificationItem';
+import { ComponentNotificationType } from '@/data/types';
 
 interface NotificationsListProps {
-  notifications: NotificationType[];
-  displayedNotifications: NotificationType[];
+  notifications: ComponentNotificationType[];
+  displayedNotifications: ComponentNotificationType[];
   showAll: boolean;
   displayCount: number;
   onMarkAsRead: (id: number) => void;
   onDismiss: (id: number) => void;
-  onViewDetails: (notification: NotificationType) => void;
+  onViewDetails: (notification: ComponentNotificationType) => void;
   setShowAll: (showAll: boolean) => void;
 }
 
