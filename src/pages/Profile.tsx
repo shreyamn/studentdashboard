@@ -33,7 +33,7 @@ export default function Profile() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | undefined>(user?.profileImage);
+  const [profileImage, setProfileImage] = useState<string | undefined>(user?.image);
 
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
@@ -87,7 +87,7 @@ export default function Profile() {
   const handleSaveProfile = () => {
     setSaving(true);
     
-    if (profileImage !== user?.profileImage) {
+    if (profileImage !== user?.image) {
       updateProfileImage(profileImage || '');
     }
     

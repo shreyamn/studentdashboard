@@ -1,4 +1,3 @@
-
 // Type definitions for the university hub app
 
 export interface ScheduleItem {
@@ -25,6 +24,7 @@ export interface User {
   profileImage?: string;
   image?: string;
   chore?: string;
+  major?: string;
 }
 
 export interface Course {

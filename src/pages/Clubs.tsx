@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, Users, Calendar, MapPin, Clock, Heart, Send } from 'lucide-react';
@@ -13,7 +12,6 @@ import { useAuth } from '@/context/AuthContext';
 import { CurrentDateTime } from '@/components/ui/CurrentDateTime';
 import AppLayout from '@/layouts/AppLayout';
 
-// Sample club data
 const clubsData = [
   {
     id: 1,
@@ -120,7 +118,6 @@ export default function Clubs() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [joinedClubs, setJoinedClubs] = useState<number[]>([]);
   
-  // Filter clubs based on search query and category
   const filteredClubs = clubsData.filter(club => {
     const matchesSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          club.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -130,17 +127,14 @@ export default function Clubs() {
     return matchesSearch && matchesCategory;
   });
   
-  // Handle joining a club
   const handleJoinClub = (clubId: number, clubName: string) => {
     if (joinedClubs.includes(clubId)) {
-      // Leave the club
       setJoinedClubs(joinedClubs.filter(id => id !== clubId));
       toast({
         title: "Left Club",
         description: `You have left the ${clubName}.`,
       });
     } else {
-      // Join the club
       setJoinedClubs([...joinedClubs, clubId]);
       toast({
         title: "Joined Club!",
@@ -149,7 +143,6 @@ export default function Clubs() {
     }
   };
   
-  // Get list of joined clubs
   const userJoinedClubs = clubsData.filter(club => joinedClubs.includes(club.id));
   
   return (
@@ -182,7 +175,6 @@ export default function Clubs() {
           </TabsList>
           
           <TabsContent value="browse" className="space-y-6">
-            {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="relative w-full sm:max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -226,7 +218,6 @@ export default function Clubs() {
               </div>
             </div>
             
-            {/* Clubs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredClubs.map((club) => (
                 <Card key={club.id} className="overflow-hidden">
@@ -382,7 +373,12 @@ export default function Clubs() {
                   <p className="text-muted-foreground mb-6">
                     Explore clubs and join ones that match your interests
                   </p>
-                  <Button onClick={() => document.querySelector('[value="browse"]')?.click()}>
+                  <Button onClick={() => {
+                    const browseTab = document.querySelector('[value="browse"]');
+                    if (browseTab instanceof HTMLElement) {
+                      browseTab.click();
+                    }
+                  }}>
                     Browse Clubs
                   </Button>
                 </div>

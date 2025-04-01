@@ -159,7 +159,7 @@ export function AppSidebar() {
         <div className="flex items-center gap-3">
           <Avatar animated className="h-10 w-10">
             <AvatarImage
-              src={user?.profileImage}
+              src={user?.image}
               alt={user?.name || 'User'}
             />
             <AvatarFallback>

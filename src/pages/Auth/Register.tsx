@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -29,7 +28,6 @@ const Register = () => {
   const [chore, setChore] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Generate email based on name and role
   const generateEmail = () => {
     if (!name) return '';
     
@@ -53,7 +51,6 @@ const Register = () => {
   
   const email = generateEmail();
   
-  // Available majors for students and faculty
   const majors = [
     { value: 'Computer Science', label: 'Computer Science' },
     { value: 'Mathematics', label: 'Mathematics' },
@@ -61,7 +58,6 @@ const Register = () => {
     { value: 'Nursing', label: 'Nursing' }
   ];
   
-  // Available chore types for staff
   const choreTypes = [
     { value: 'Events', label: 'Events Management' },
     { value: 'Cleaning', label: 'Cleaning and Maintenance' },
@@ -75,24 +71,18 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      let userData: Partial<User> & { password: string } = {
+      const success = await register(
         name,
         email,
         password,
-        role
-      };
+        role,
+        role === 'student' || role === 'faculty' ? major : chore
+      );
       
-      if (role === 'student' || role === 'faculty') {
-        userData.department = major;
-      } else if (role === 'staff') {
-        userData.chore = chore;
+      if (success) {
+        toast.success("Registration successful!");
+        navigate('/dashboard');
       }
-      
-      // Register user
-      await register(userData);
-      
-      toast.success("Registration successful!");
-      navigate('/dashboard');
     } catch (error) {
       toast.error("Registration failed. Please try again.");
       console.error("Registration error:", error);
@@ -101,7 +91,6 @@ const Register = () => {
     }
   };
   
-  // Handle role change with the correct type
   const handleRoleChange = (value: string) => {
     setRole(value as 'student' | 'faculty' | 'staff');
   };
@@ -195,7 +184,6 @@ const Register = () => {
               </RadioGroup>
             </div>
             
-            {/* Conditional field based on role */}
             {(role === 'student' || role === 'faculty') && (
               <div className="space-y-2">
                 <Label htmlFor="major">

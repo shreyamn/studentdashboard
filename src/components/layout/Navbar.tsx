@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import { Bell, Menu, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Detect scroll for navbar appearance
   useEffect(() => {
     setMounted(true);
     
@@ -34,7 +32,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Check if the user is a student (to show courses link)
   const isStudent = user?.role === 'student';
 
   if (!mounted) return null;
@@ -119,7 +116,6 @@ export default function Navbar() {
                 Dashboard
               </Link>
               
-              {/* Only show Courses link for students */}
               {isStudent && (
                 <Link
                   to="/courses"
@@ -171,7 +167,7 @@ export default function Navbar() {
                   >
                     <Avatar animated className="h-9 w-9">
                       <AvatarImage
-                        src={user?.profileImage}
+                        src={user?.image}
                         alt={user?.name || 'User'}
                       />
                       <AvatarFallback>
