@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-import Layout from '@/layouts/Layout';
 import { motion } from 'framer-motion';
 import { Bell, Search, Filter, Trash2, CheckCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -9,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { staffNotificationsData } from '@/data/staffNotificationsData';
+import Layout from '@/layouts/Layout';
 
 // Animation variants
 const containerVariants = {
@@ -43,7 +42,69 @@ export default function Notifications() {
       return staffNotificationsData;
     }
     
-    // Default notifications for other roles
+    // Faculty notifications for faculty role
+    if (user?.role === 'faculty') {
+      return [
+        {
+          id: 1,
+          title: 'Grades Due Reminder',
+          description: 'Final grades for CS 101 are due by Friday at 5 PM. Please submit through the faculty portal.',
+          time: '1 hour ago',
+          type: 'warning',
+        },
+        {
+          id: 2,
+          title: 'Teaching Evaluation Results',
+          description: 'Your teaching evaluations for the previous semester are now available in your faculty dashboard.',
+          time: '3 hours ago',
+          type: 'info',
+        },
+        {
+          id: 3,
+          title: 'Department Meeting Scheduled',
+          description: 'The monthly Computer Science department meeting is scheduled for Tuesday at 3:00 PM in Room 302.',
+          time: '1 day ago',
+          type: 'info',
+        },
+        {
+          id: 4,
+          title: 'Curriculum Committee Assignment',
+          description: 'You have been assigned to the Curriculum Review Committee. The first meeting is next Monday.',
+          time: '2 days ago',
+          type: 'info',
+        },
+        {
+          id: 5,
+          title: 'Research Grant Deadline',
+          description: 'Reminder: The deadline for the university research grant applications is in 10 days.',
+          time: '3 days ago',
+          type: 'warning',
+        },
+        {
+          id: 6,
+          title: 'Student Advising Week',
+          description: 'Next week is designated for Fall semester student advising. Please update your availability.',
+          time: '4 days ago',
+          type: 'info',
+        },
+        {
+          id: 7,
+          title: 'Course Materials Update Required',
+          description: 'Please update your course materials for the Data Structures class by the end of this month.',
+          time: '1 week ago',
+          type: 'warning',
+        },
+        {
+          id: 8,
+          title: 'Teaching Schedule Published',
+          description: 'Your teaching schedule for the next semester has been published. Please review for any conflicts.',
+          time: '1 week ago',
+          type: 'success',
+        }
+      ];
+    }
+    
+    // Default notifications for other roles (students)
     return [
       {
         id: 1,

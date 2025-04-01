@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { 
   Calendar, 
@@ -153,30 +154,30 @@ export default function FacultyDashboardContent() {
   const facultyNotifications: Notification[] = [
     {
       id: 1,
-      title: 'Performance Review Scheduled',
-      description: 'Your annual performance review has been scheduled for next Tuesday at 2 PM with the Department Chair.',
-      time: '2 hours ago',
-      type: 'info',
-    },
-    {
-      id: 2,
-      title: 'New Research Grant Opportunity',
-      description: 'A new grant opportunity in your field has been announced with a submission deadline of next month.',
-      time: '1 day ago',
-      type: 'success',
-    },
-    {
-      id: 3,
-      title: 'Student Grade Dispute',
-      description: 'A student has submitted a formal grade dispute for your Data Structures course.',
-      time: '3 days ago',
+      title: 'Grades Due Reminder',
+      description: 'Final grades for CS 101 are due by Friday at 5 PM. Please submit through the faculty portal.',
+      time: '1 hour ago',
       type: 'warning',
     },
     {
+      id: 2,
+      title: 'Teaching Evaluation Results',
+      description: 'Your teaching evaluations for the previous semester are now available in your faculty dashboard.',
+      time: '3 hours ago',
+      type: 'info',
+    },
+    {
+      id: 3,
+      title: 'Department Meeting Scheduled',
+      description: 'The monthly Computer Science department meeting is scheduled for Tuesday at 3:00 PM in Room 302.',
+      time: '1 day ago',
+      type: 'info',
+    },
+    {
       id: 4,
-      title: 'Teaching Evaluation Results Available',
-      description: 'The results from your last semester\'s teaching evaluations are now available for review.',
-      time: '1 week ago',
+      title: 'Student Advising Week',
+      description: 'Next week is designated for Fall semester student advising. Please update your availability.',
+      time: '4 days ago',
       type: 'info',
     },
   ];
