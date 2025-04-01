@@ -8,7 +8,7 @@ import StaffChoresWidget from './StaffChoresWidget';
 import { staffNotificationsData } from '@/data/staffNotificationsData';
 import NotificationsWidget from './NotificationsWidget';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Download, FileText, AlertTriangle, BuildingIcon, ClipboardCheck, Calendar } from 'lucide-react';
+import { Download, FileText, AlertTriangle, Calendar, BuildingIcon, ClipboardCheck } from 'lucide-react';
 
 export default function StaffDashboardContent() {
   const { user } = useAuth();

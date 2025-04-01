@@ -117,7 +117,50 @@ export default function FacultyDashboardContent() {
         </TabsContent>
         
         <TabsContent value="schedule" className="space-y-4">
-          <TeachingScheduleWidget />
+          <TeachingScheduleWidget 
+            classesData={[
+              {
+                id: 1,
+                course: "Introduction to Computer Science",
+                courseCode: "CS101",
+                day: "Monday",
+                startTime: "10:00 AM",
+                endTime: "11:50 AM",
+                location: "Science Building, Room 301",
+                studentsEnrolled: 45
+              },
+              {
+                id: 2,
+                course: "Data Structures",
+                courseCode: "CS202",
+                day: "Tuesday",
+                startTime: "2:00 PM",
+                endTime: "3:50 PM",
+                location: "Computer Lab, Room 105",
+                studentsEnrolled: 32
+              },
+              {
+                id: 3,
+                course: "Algorithms Analysis",
+                courseCode: "CS305",
+                day: "Wednesday",
+                startTime: "9:30 AM",
+                endTime: "11:20 AM",
+                location: "Science Building, Room 201",
+                studentsEnrolled: 28
+              },
+              {
+                id: 4,
+                course: "Database Systems",
+                courseCode: "CS340",
+                day: "Friday",
+                startTime: "1:00 PM",
+                endTime: "2:50 PM",
+                location: "Science Building, Room 301",
+                studentsEnrolled: 38
+              }
+            ]}
+          />
         </TabsContent>
         
         <TabsContent value="tasks" className="space-y-4">
