@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/layout/Sidebar';
+import { AppSidebar } from '../components/layout/Sidebar';
 import { CoursesHeader } from '../components/courses/CoursesHeader';
 import { CourseContent } from '../components/courses/CourseContent';
 import { DepartmentToggle } from '../components/courses/DepartmentToggle';
@@ -46,28 +46,26 @@ const Courses = () => {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto py-8">
-        <CoursesHeader 
-          department={!showAllCourses && user?.department ? user.department : undefined} 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
-        
-        <DepartmentToggle 
-          showAllCourses={showAllCourses}
-          toggleShowAllCourses={toggleShowAllCourses}
-        />
-        
-        <CourseContent 
-          filteredCourses={filteredCourses}
-          selectedCourse={selectedCourse}
-          setSelectedCourse={setSelectedCourse}
-          department={!showAllCourses ? user?.department : undefined}
-          showAllCourses={showAllCourses}
-        />
-      </div>
-    </Layout>
+    <div className="container mx-auto py-8">
+      <CoursesHeader 
+        department={!showAllCourses && user?.department ? user.department : undefined} 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+      
+      <DepartmentToggle 
+        showAllCourses={showAllCourses}
+        toggleShowAllCourses={toggleShowAllCourses}
+      />
+      
+      <CourseContent 
+        filteredCourses={filteredCourses}
+        selectedCourse={selectedCourse}
+        setSelectedCourse={setSelectedCourse}
+        department={!showAllCourses ? user?.department : undefined}
+        showAllCourses={showAllCourses}
+      />
+    </div>
   );
 };
 
