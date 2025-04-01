@@ -1,7 +1,7 @@
 
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { BookMarked, MapPin, Users } from 'lucide-react';
+import { BookMarked, MapPin } from 'lucide-react';
 import { Course } from '@/data/types';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -44,21 +44,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <Progress value={course.progress} className="h-1.5" />
       </div>
       
-      {/* Add attendance percentage */}
-      {course.attendancePercentage !== undefined && (
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground">Attendance</span>
-            <span className="text-xs font-medium">{course.attendancePercentage}%</span>
-          </div>
-          <Progress 
-            value={course.attendancePercentage} 
-            className="h-1.5 bg-secondary"
-          />
-        </div>
-      )}
-      
-      <div className="mt-3 flex justify-between items-center">
+      <div className="mt-3 flex justify-end items-center">
         {course.classroom && (
           <Link 
             to="/map" 
@@ -68,14 +54,6 @@ export default function CourseCard({ course }: CourseCardProps) {
             Locate on map
           </Link>
         )}
-        
-        <Link 
-          to="/attendance" 
-          className="text-xs text-primary hover:underline flex items-center"
-        >
-          <Users className="mr-1 h-3 w-3" />
-          Attendance
-        </Link>
       </div>
     </motion.div>
   );

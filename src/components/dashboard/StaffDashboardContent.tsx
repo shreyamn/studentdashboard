@@ -18,6 +18,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
 // Mock maintenance tasks data
 const maintenanceTasksData = [
@@ -74,28 +75,31 @@ const eventsSetupData = [
     id: 1,
     title: 'Career Fair Setup',
     location: 'Student Center, Main Hall',
-    date: '2023-11-15',
+    date: '2025-11-15',
     setupTime: '07:00 AM',
     eventTime: '10:00 AM - 3:00 PM',
-    requirements: ['30 Tables', '100 Chairs', 'Projector', 'Audio System']
+    requirements: ['30 Tables', '100 Chairs', 'Projector', 'Audio System'],
+    isReady: false
   },
   {
     id: 2,
     title: 'Guest Lecture Preparation',
     location: 'Computer Science Building, Auditorium',
-    date: '2023-11-20',
+    date: '2025-11-20',
     setupTime: '12:00 PM',
     eventTime: '2:00 PM - 4:00 PM',
-    requirements: ['Podium', 'Microphone', 'Projector', 'Water Station']
+    requirements: ['Podium', 'Microphone', 'Projector', 'Water Station'],
+    isReady: false
   },
   {
     id: 3,
     title: 'Student Club Meetup',
     location: 'Student Center, Room 202',
-    date: '2023-11-10',
+    date: '2025-11-10',
     setupTime: '4:00 PM',
     eventTime: '5:00 PM - 7:00 PM',
-    requirements: ['10 Tables', '30 Chairs', 'Whiteboard']
+    requirements: ['10 Tables', '30 Chairs', 'Whiteboard'],
+    isReady: false
   },
 ];
 
@@ -146,6 +150,9 @@ export default function StaffDashboardContent() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [tasks, setTasks] = useState(maintenanceTasksData);
+  const [events, setEvents] = useState(eventsSetupData);
+  const [alerts, setAlerts] = useState(alertsData);
+  const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
   
   const handleMarkAsComplete = (taskId: number) => {
     setTasks(tasks.map(task => 
@@ -159,9 +166,33 @@ export default function StaffDashboardContent() {
   };
   
   const handleReassign = (taskId: number) => {
+    // Find the task
+    const task = tasks.find(t => t.id === taskId);
+    
+    // Define possible teams
+    const teams = [
+      'Facilities Team A', 
+      'Facilities Team B', 
+      'IT Support', 
+      'Grounds Crew', 
+      'Events Staff',
+      'Maintenance Team'
+    ];
+    
+    // Filter out current team
+    const availableTeams = teams.filter(team => team !== task?.assignedTo);
+    
+    // Randomly select a new team
+    const newTeam = availableTeams[Math.floor(Math.random() * availableTeams.length)];
+    
+    // Update the task
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, assignedTo: newTeam } : task
+    ));
+    
     toast({
       title: "Task reassigned",
-      description: "The task has been reassigned to another team",
+      description: `The task has been reassigned to ${newTeam}`,
     });
   };
 
@@ -170,6 +201,10 @@ export default function StaffDashboardContent() {
   };
 
   const handleMarkEventReady = (eventId: number) => {
+    setEvents(events.map(event => 
+      event.id === eventId ? { ...event, isReady: true } : event
+    ));
+    
     toast({
       title: "Event marked as ready",
       description: "The event setup has been marked as ready",
@@ -178,6 +213,8 @@ export default function StaffDashboardContent() {
 
   const handleViewBuildingIssues = (building: string) => {
     setActiveTab('buildings');
+    setSelectedBuilding(building);
+    
     toast({
       title: `${building} selected`,
       description: `Viewing issues for ${building}`,
@@ -185,9 +222,25 @@ export default function StaffDashboardContent() {
   };
 
   const handleAssignAlert = (alertId: number) => {
+    // Find teams that are not at capacity
+    const availableTeams = [
+      'Maintenance Team',
+      'Facilities Team A',
+      'Facilities Team B',
+      'Emergency Response Team'
+    ];
+    
+    // Randomly select a team
+    const assignedTeam = availableTeams[Math.floor(Math.random() * availableTeams.length)];
+    
+    // Update alert
+    setAlerts(alerts.map(alert => 
+      alert.id === alertId ? { ...alert, status: 'Assigned', assignedTo: assignedTeam } : alert
+    ));
+    
     toast({
       title: "Alert assigned",
-      description: "This alert has been assigned to the maintenance team",
+      description: `This alert has been assigned to ${assignedTeam}`,
     });
   };
 
@@ -202,8 +255,39 @@ export default function StaffDashboardContent() {
     (sum, building) => sum + (building.totalIssues - building.issuesResolved), 0
   );
   
+  // Function to get current date and time
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+  };
+  
+  const [currentDateTime, setCurrentDateTime] = useState(getCurrentDateTime());
+  
+  // Update date and time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDateTime(getCurrentDateTime());
+    }, 60000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="text-sm text-muted-foreground">{currentDateTime}</p>
+        </div>
+      </div>
+      
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
@@ -241,7 +325,7 @@ export default function StaffDashboardContent() {
               <CardContent>
                 <div className="flex items-center">
                   <Calendar className="mr-2 h-5 w-5 text-primary" />
-                  <span className="text-2xl font-bold">{eventsSetupData.length}</span>
+                  <span className="text-2xl font-bold">{events.length}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Requiring setup this week</p>
               </CardContent>
@@ -267,7 +351,7 @@ export default function StaffDashboardContent() {
               <CardContent>
                 <div className="flex items-center">
                   <AlertTriangle className="mr-2 h-5 w-5 text-amber-500" />
-                  <span className="text-2xl font-bold">{alertsData.length}</span>
+                  <span className="text-2xl font-bold">{alerts.length}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Pending attention</p>
               </CardContent>
@@ -315,6 +399,12 @@ export default function StaffDashboardContent() {
                     </div>
                   </div>
                 ))}
+                
+                {tasks.filter(task => task.priority === 'High' && task.status !== 'Completed').length === 0 && (
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-200 text-green-800 text-center">
+                    <p>All high priority tasks are completed! 🎉</p>
+                  </div>
+                )}
               </div>
               <div className="mt-4">
                 <Button variant="outline" size="sm" onClick={() => handleViewAll('tasks')}>
@@ -333,7 +423,7 @@ export default function StaffDashboardContent() {
               </div>
               
               <div className="space-y-3">
-                {alertsData.slice(0, 2).map((alert) => (
+                {alerts.slice(0, 2).map((alert) => (
                   <div 
                     key={alert.id} 
                     className={`bg-background rounded-lg p-4 border ${
@@ -365,15 +455,14 @@ export default function StaffDashboardContent() {
                         </div>
                       </div>
                       
-                      <Badge 
-                        variant="outline" 
-                        className={`${
-                          alert.status === 'Assigned' ? 'bg-green-100 text-green-800 border-green-200' : 
-                          'bg-amber-100 text-amber-800 border-amber-200'
-                        }`}
+                      <Button 
+                        variant={alert.status === 'Assigned' ? 'outline' : 'secondary'} 
+                        size="sm"
+                        onClick={() => alert.status !== 'Assigned' && handleAssignAlert(alert.id)}
+                        disabled={alert.status === 'Assigned'}
                       >
-                        {alert.status}
-                      </Badge>
+                        {alert.status === 'Assigned' ? 'Assigned' : 'Assign'}
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -519,14 +608,23 @@ export default function StaffDashboardContent() {
           <h2 className="text-2xl font-bold tracking-tight">Upcoming Events</h2>
           <AnimatedCard>
             <div className="space-y-6">
-              {eventsSetupData.map((event) => (
+              {events.map((event) => (
                 <div 
                   key={event.id} 
-                  className="bg-background rounded-lg p-6 border border-border"
+                  className={`bg-background rounded-lg p-6 border ${
+                    event.isReady ? 'border-green-200 bg-green-50' : 'border-border'
+                  }`}
                 >
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                     <div>
-                      <h3 className="text-xl font-semibold">{event.title}</h3>
+                      <div className="flex items-center">
+                        <h3 className="text-xl font-semibold">{event.title}</h3>
+                        {event.isReady && (
+                          <Badge variant="outline" className="ml-2 bg-green-100 text-green-800 border-green-200">
+                            Ready
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-muted-foreground mb-2">{event.location}</p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -570,7 +668,12 @@ export default function StaffDashboardContent() {
                     </div>
                     
                     <div className="flex flex-col gap-2 min-w-[120px]">
-                      <Button onClick={() => handleMarkEventReady(event.id)}>Mark Ready</Button>
+                      <Button 
+                        onClick={() => handleMarkEventReady(event.id)}
+                        disabled={event.isReady}
+                      >
+                        {event.isReady ? 'Ready' : 'Mark Ready'}
+                      </Button>
                       <Button variant="outline">View Details</Button>
                     </div>
                   </div>
@@ -582,67 +685,122 @@ export default function StaffDashboardContent() {
         
         {/* Building Status Tab */}
         <TabsContent value="buildings" className="space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">Building Status</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {selectedBuilding ? `${selectedBuilding} Issues` : 'Building Status'}
+          </h2>
           <AnimatedCard>
             <div className="grid grid-cols-1 gap-6">
-              {Object.entries(buildingStatusData).map(([building, status]) => (
-                <div 
-                  key={building} 
-                  className="bg-background rounded-lg p-6 border border-border"
-                >
-                  <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-semibold">{building}</h3>
-                        <Badge 
-                          variant="outline" 
-                          className={`${
-                            status.percentage >= 90 ? 'bg-green-100 text-green-800 border-green-200' : 
-                            status.percentage >= 75 ? 'bg-blue-100 text-blue-800 border-blue-200' : 
-                            status.percentage >= 60 ? 'bg-amber-100 text-amber-800 border-amber-200' : 
-                            'bg-red-100 text-red-800 border-red-200'
-                          }`}
-                        >
-                          {status.percentage}% Resolved
-                        </Badge>
-                      </div>
-                      
-                      <div className="mb-4">
-                        <Progress 
-                          value={status.percentage} 
-                          className="h-2.5" 
-                        />
-                      </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                        <div className="bg-green-50 rounded-lg p-3 border border-green-100">
-                          <p className="text-sm text-muted-foreground">Resolved</p>
-                          <p className="text-xl font-bold text-green-600">{status.issuesResolved}</p>
-                        </div>
-                        
-                        <div className="bg-red-50 rounded-lg p-3 border border-red-100">
-                          <p className="text-sm text-muted-foreground">Pending</p>
-                          <p className="text-xl font-bold text-red-600">{status.totalIssues - status.issuesResolved}</p>
-                        </div>
-                        
-                        <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
-                          <p className="text-sm text-muted-foreground">Total</p>
-                          <p className="text-xl font-bold text-blue-600">{status.totalIssues}</p>
-                        </div>
-                      </div>
+              {selectedBuilding ? (
+                <>
+                  <div className="bg-background rounded-lg p-6 border border-border">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold">{selectedBuilding}</h3>
+                      <Button variant="outline" size="sm" onClick={() => setSelectedBuilding(null)}>
+                        View All Buildings
+                      </Button>
                     </div>
                     
-                    <div className="flex gap-2">
-                      <Button variant="outline">
-                        View Issues
-                      </Button>
-                      <Button>
-                        Add Report
-                      </Button>
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm">Issue Resolution Status</span>
+                        <span className="font-medium">
+                          {buildingStatusData[selectedBuilding].issuesResolved} / {buildingStatusData[selectedBuilding].totalIssues}
+                        </span>
+                      </div>
+                      <Progress value={buildingStatusData[selectedBuilding].percentage} className="h-2" />
+                    </div>
+                    
+                    <h4 className="font-medium mb-4">Active Maintenance Issues</h4>
+                    
+                    <div className="space-y-4">
+                      {/* Show sample issues for the selected building */}
+                      {[...Array(buildingStatusData[selectedBuilding].totalIssues - buildingStatusData[selectedBuilding].issuesResolved)].map((_, index) => (
+                        <div key={index} className="bg-muted rounded-lg p-4 border border-border">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h5 className="font-medium">
+                                {['HVAC Malfunction', 'Light Fixture Repair', 'Door Lock Issue', 'Window Seal Replacement', 'Plumbing Leak'][index % 5]}
+                              </h5>
+                              <p className="text-sm text-muted-foreground">
+                                {selectedBuilding}, Room {Math.floor(Math.random() * 400) + 100}
+                              </p>
+                              <div className="text-xs text-muted-foreground mt-2">
+                                Reported: {index === 0 ? 'Today' : `${index + 1} days ago`}
+                              </div>
+                            </div>
+                            <Badge variant={index === 0 ? 'destructive' : 'outline'}>
+                              {index === 0 ? 'Urgent' : 'Pending'}
+                            </Badge>
+                          </div>
+                          <div className="mt-3 flex justify-end space-x-2">
+                            <Button variant="outline" size="sm">Assign</Button>
+                            <Button size="sm">Resolve</Button>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {buildingStatusData[selectedBuilding].totalIssues === buildingStatusData[selectedBuilding].issuesResolved && (
+                        <div className="bg-green-50 rounded-lg p-4 text-center text-green-800 border border-green-200">
+                          <p>No active maintenance issues for this building! 🎉</p>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                </>
+              ) : (
+                Object.entries(buildingStatusData).map(([building, status]) => (
+                  <div 
+                    key={building} 
+                    className="bg-background rounded-lg p-6 border border-border"
+                  >
+                    <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-xl font-semibold">{building}</h3>
+                          <Badge 
+                            variant="outline" 
+                            className={`${
+                              status.percentage >= 90 ? 'bg-green-100 text-green-800 border-green-200' : 
+                              status.percentage >= 75 ? 'bg-blue-100 text-blue-800 border-blue-200' : 
+                              status.percentage >= 60 ? 'bg-amber-100 text-amber-800 border-amber-200' : 
+                              'bg-red-100 text-red-800 border-red-200'
+                            }`}
+                          >
+                            {status.percentage >= 90 ? 'Excellent' : 
+                             status.percentage >= 75 ? 'Good' : 
+                             status.percentage >= 60 ? 'Fair' : 
+                             'Needs Attention'}
+                          </Badge>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm">Issue Resolution Status</span>
+                            <span className="font-medium">{status.issuesResolved} / {status.totalIssues}</span>
+                          </div>
+                          <Progress value={status.percentage} className="h-2" />
+                        </div>
+                        
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <p className="text-sm font-medium">Outstanding Issues</p>
+                            <p className="text-lg font-bold">{status.totalIssues - status.issuesResolved}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Last Inspection</p>
+                            <p className="text-sm">2 weeks ago</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col gap-2 min-w-[120px]">
+                        <Button onClick={() => handleViewBuildingIssues(building)}>View Issues</Button>
+                        <Button variant="outline">Schedule Inspection</Button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </AnimatedCard>
         </TabsContent>
@@ -651,33 +809,20 @@ export default function StaffDashboardContent() {
         <TabsContent value="alerts" className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">Maintenance Alerts</h2>
           <AnimatedCard>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="font-display font-medium text-lg">Current Alerts</h3>
-                <p className="text-sm text-muted-foreground">
-                  {alertsData.length} alerts requiring attention
-                </p>
-              </div>
-              <Button>
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                Report New Issue
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              {alertsData.map((alert) => (
+            <div className="space-y-6">
+              {alerts.map((alert) => (
                 <div 
                   key={alert.id} 
-                  className={`bg-background rounded-lg p-5 border ${
+                  className={`bg-background rounded-lg p-6 border ${
                     alert.priority === 'High' ? 'border-red-200' : 
                     alert.priority === 'Medium' ? 'border-amber-200' : 
-                    'border-blue-200'
+                    'border-border'
                   }`}
                 >
                   <div className="flex flex-col md:flex-row items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center mb-2">
-                        <h3 className="font-semibold text-lg">{alert.title}</h3>
+                      <div className="flex items-center">
+                        <h3 className="text-xl font-semibold">{alert.title}</h3>
                         <Badge 
                           variant="outline" 
                           className={`ml-2 ${
@@ -688,37 +833,53 @@ export default function StaffDashboardContent() {
                         >
                           {alert.priority} Priority
                         </Badge>
+                        <Badge 
+                          variant="outline" 
+                          className={`ml-2 ${
+                            alert.status === 'Assigned' ? 'bg-green-100 text-green-800 border-green-200' : 
+                            'bg-amber-100 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          {alert.status}
+                        </Badge>
                       </div>
                       
-                      <p className="text-base mb-2">{alert.description}</p>
+                      <p className="text-muted-foreground mt-2">{alert.location}</p>
+                      <p className="mt-4">{alert.description}</p>
                       
-                      <div className="flex items-center text-sm text-muted-foreground mb-1">
-                        <Building className="h-4 w-4 mr-1" />
-                        <span>{alert.location}</span>
-                      </div>
-                      
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4 mr-1" />
-                        <span>Reported at {alert.reportedAt}</span>
-                      </div>
-                      
-                      {alert.assignedTo && (
-                        <div className="flex items-center text-sm text-muted-foreground mt-1">
-                          <Users className="h-4 w-4 mr-1" />
-                          <span>Assigned to {alert.assignedTo}</span>
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex items-center">
+                          <Clock className="h-5 w-5 mr-2 text-primary" />
+                          <div>
+                            <p className="text-sm font-medium">Reported</p>
+                            <p className="text-sm text-muted-foreground">{alert.reportedAt}</p>
+                          </div>
                         </div>
-                      )}
+                        
+                        {alert.assignedTo && (
+                          <div className="flex items-center">
+                            <Users className="h-5 w-5 mr-2 text-primary" />
+                            <div>
+                              <p className="text-sm font-medium">Assigned To</p>
+                              <p className="text-sm text-muted-foreground">{alert.assignedTo}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     
-                    <div className="flex gap-2">
-                      {alert.status === 'Pending' ? (
-                        <Button onClick={() => handleAssignAlert(alert.id)}>Assign Task</Button>
+                    <div className="flex flex-col gap-2 min-w-[120px]">
+                      {alert.status !== 'Assigned' ? (
+                        <Button onClick={() => handleAssignAlert(alert.id)}>Assign</Button>
                       ) : (
-                        <Button variant="outline">View Details</Button>
+                        <Button variant="outline" onClick={() => {
+                          toast({
+                            title: "Work order updated",
+                            description: "The work order has been updated and sent to the team.",
+                          });
+                        }}>Update</Button>
                       )}
-                      <Button variant="outline">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <Button variant="destructive">Mark Critical</Button>
                     </div>
                   </div>
                 </div>

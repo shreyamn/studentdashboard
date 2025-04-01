@@ -14,6 +14,24 @@ interface CoursesListProps {
 export default function CoursesList({ courses }: CoursesListProps) {
   const { user } = useAuth();
   
+  // Get subject-specific title based on user's department/major
+  const getMajorSpecificTitle = () => {
+    if (!user?.department) return "General Studies Courses";
+    
+    switch(user.department) {
+      case "Computer Science":
+        return "Computer Science Courses";
+      case "Biology":
+        return "Biology Courses";
+      case "Mathematics":
+        return "Mathematics Courses";
+      case "Nursing":
+        return "Nursing Courses";
+      default:
+        return `${user.department} Courses`;
+    }
+  };
+  
   // Filter courses based on user's department
   const filteredCourses = user?.department
     ? courses.filter(course => course.department === user.department)
@@ -46,7 +64,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display font-medium text-lg">Your General Studies Courses</h2>
+        <h2 className="font-display font-medium text-lg">{getMajorSpecificTitle()}</h2>
         <Link to="/courses" className="text-primary text-sm font-medium hover:underline flex items-center" onClick={handleViewAllClick}>
           View all courses
           <ArrowRight className="ml-1 h-4 w-4" />
@@ -90,25 +108,6 @@ export default function CoursesList({ courses }: CoursesListProps) {
                   </div>
                 </div>
                 
-                {/* Add attendance section */}
-                {course.attendancePercentage !== undefined && (
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="flex items-center">
-                        <Users className="h-3 w-3 mr-1" />
-                        Attendance
-                      </span>
-                      <span className="font-medium">{course.attendancePercentage}%</span>
-                    </div>
-                    <div className="w-full bg-secondary h-1.5 rounded-full">
-                      <div 
-                        className="bg-primary/80 h-1.5 rounded-full" 
-                        style={{ width: `${course.attendancePercentage}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-                
                 <div className="flex justify-between items-center mt-4">
                   <Link 
                     to="/courses" 
@@ -120,27 +119,14 @@ export default function CoursesList({ courses }: CoursesListProps) {
                   </Link>
                   
                   <Link 
-                    to="/attendance" 
+                    to="/map" 
                     className="text-primary text-sm hover:underline flex items-center"
-                    onClick={handleTrackAttendance}
+                    onClick={() => course.classroom && handleLocateOnMap(course.classroom)}
                   >
-                    <Users className="mr-1 h-4 w-4" />
-                    Track attendance
+                    <MapPin className="mr-1 h-4 w-4" />
+                    Locate on map
                   </Link>
                 </div>
-                
-                {course.classroom && (
-                  <div className="mt-2 flex justify-end">
-                    <Link 
-                      to="/map" 
-                      className="text-primary text-sm hover:underline flex items-center"
-                      onClick={() => handleLocateOnMap(course.classroom!)}
-                    >
-                      <MapPin className="mr-1 h-4 w-4" />
-                      Locate on map
-                    </Link>
-                  </div>
-                )}
               </div>
             </div>
           );

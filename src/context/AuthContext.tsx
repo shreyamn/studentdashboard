@@ -1,156 +1,220 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { User, AuthContextType } from '@/data/types';
 
-// Mock users data
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: 'John Student',
-    email: 'john.student@university.edu',
-    role: 'student',
-    department: 'Computer Science',
-    image: 'https://picsum.photos/id/1005/200',
-    profileImage: 'https://picsum.photos/id/1005/200',
-    year: 2
-  },
-  {
-    id: "2",
-    name: 'Emma Faculty',
-    email: 'emma.faculty@faculty.university.edu',
-    role: 'faculty',
-    department: 'Computer Science',
-    image: 'https://picsum.photos/id/1011/200',
-    profileImage: 'https://picsum.photos/id/1011/200'
-  },
-  {
-    id: "3",
-    name: 'Mike Staff',
-    email: 'mike.staff@staff.university.edu',
-    role: 'staff',
-    chore: 'Events',
-    image: 'https://picsum.photos/id/1012/200',
-    profileImage: 'https://picsum.photos/id/1012/200'
-  }
-];
+// User types
+type UserRole = 'student' | 'faculty' | 'staff' | 'admin';
+
+interface User {
+  id: string | number;
+  name: string;
+  email: string;
+  role: UserRole;
+  department?: string;
+  major?: string;
+  year?: number;
+  image?: string;
+  chore?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, role: UserRole, department?: string) => Promise<boolean>;
+  logout: () => void;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const navigate = useNavigate();
-  
-  // Check for existing session on load
+
+  // Load user from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('university_hub_user');
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setIsAuthenticated(true);
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Failed to parse stored user:', error);
+        localStorage.removeItem('university_hub_user');
+      }
     }
   }, []);
-  
-  // Login function
-  const login = async (email: string, password: string) => {
-    // Mock authentication
-    const foundUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-    
-    if (!foundUser) {
-      throw new Error('Invalid email or password');
+
+  // Sample users for demo - in a real app this would be in a database
+  const users: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'student@example.com',
+      role: 'student',
+      department: 'Computer Science',
+      major: 'Computer Science',
+      year: 3,
+      image: 'https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'student2@example.com',
+      role: 'student',
+      department: 'Biology',
+      major: 'Biology',
+      year: 2,
+      image: 'https://ui-avatars.com/api/?name=Jane+Smith&background=83C5BE&color=fff'
+    },
+    {
+      id: '3',
+      name: 'Emilia Clarke',
+      email: 'student3@example.com',
+      role: 'student',
+      department: 'Mathematics',
+      major: 'Applied Mathematics',
+      year: 4,
+      image: 'https://ui-avatars.com/api/?name=Emilia+Clarke&background=FFDDD2&color=006D77'
+    },
+    {
+      id: '4',
+      name: 'Robert Johnson',
+      email: 'student4@example.com',
+      role: 'student',
+      department: 'Nursing',
+      major: 'Nursing Practice',
+      year: 2,
+      image: 'https://ui-avatars.com/api/?name=Robert+Johnson&background=E29578&color=fff'
+    },
+    {
+      id: '5',
+      name: 'Prof. Anderson',
+      email: 'faculty@example.com',
+      role: 'faculty',
+      department: 'Computer Science',
+      image: 'https://ui-avatars.com/api/?name=Prof+Anderson&background=006D77&color=fff'
+    },
+    {
+      id: '6',
+      name: 'Prof. Williams',
+      email: 'faculty2@example.com',
+      role: 'faculty',
+      department: 'Biology',
+      image: 'https://ui-avatars.com/api/?name=Prof+Williams&background=006D77&color=fff'
+    },
+    {
+      id: '7',
+      name: 'Alex Johnson',
+      email: 'staff@example.com',
+      role: 'staff',
+      chore: 'Maintenance',
+      image: 'https://ui-avatars.com/api/?name=Alex+Johnson&background=EDF6F9&color=006D77'
     }
-    
-    // In a real app, you'd verify password here
-    // For demo, we'll accept any password
-    
-    // Save to local storage
-    localStorage.setItem('university_hub_user', JSON.stringify(foundUser));
-    
-    // Update state
-    setUser(foundUser);
-    setIsAuthenticated(true);
-    
-    return Promise.resolve();
+  ];
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      // Simple validation
+      if (!email || !password) {
+        toast.error('Please provide both email and password');
+        return false;
+      }
+
+      // In a real app, this would be an API call
+      // For demo purposes, we're using the sample users
+      const foundUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      
+      if (foundUser) {
+        // Simulate successful login
+        setUser(foundUser);
+        setIsAuthenticated(true);
+        
+        // Store user in localStorage
+        localStorage.setItem('university_hub_user', JSON.stringify(foundUser));
+        
+        toast.success(`Welcome back, ${foundUser.name}!`);
+        return true;
+      } else {
+        toast.error('Invalid credentials. Try using student@example.com / faculty@example.com / staff@example.com with any password');
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('An error occurred during login. Please try again.');
+      return false;
+    }
   };
-  
-  // Logout function
+
+  const register = async (
+    name: string, 
+    email: string, 
+    password: string, 
+    role: UserRole,
+    department?: string
+  ): Promise<boolean> => {
+    try {
+      // Simple validation
+      if (!name || !email || !password) {
+        toast.error('Please fill in all required fields');
+        return false;
+      }
+
+      // Check if user already exists
+      const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (existingUser) {
+        toast.error('A user with this email already exists');
+        return false;
+      }
+
+      // Create new user - in a real app, this would be an API call
+      const newUser: User = {
+        id: String(users.length + 1),
+        name,
+        email,
+        role,
+        department,
+        image: `https://ui-avatars.com/api/?name=${name.replace(' ', '+')}&background=0D8ABC&color=fff`
+      };
+
+      // Add to users array (in a real app, this would be saved to a database)
+      users.push(newUser);
+
+      // Log user in
+      setUser(newUser);
+      setIsAuthenticated(true);
+      
+      // Store user in localStorage
+      localStorage.setItem('university_hub_user', JSON.stringify(newUser));
+      
+      toast.success('Registration successful! Welcome to University Hub.');
+      return true;
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error('An error occurred during registration. Please try again.');
+      return false;
+    }
+  };
+
   const logout = () => {
-    localStorage.removeItem('university_hub_user');
     setUser(null);
     setIsAuthenticated(false);
-    navigate('/login');
+    localStorage.removeItem('university_hub_user');
+    toast.success('You have been logged out successfully');
   };
-  
-  // Register function
-  const register = async (userData: Partial<User> & { password: string }) => {
-    // Check if email exists
-    const emailExists = mockUsers.some(
-      u => u.email?.toLowerCase() === userData.email?.toLowerCase()
-    );
-    
-    if (emailExists) {
-      throw new Error('Email already in use');
-    }
-    
-    // Create new user
-    const newUser: User = {
-      id: String(mockUsers.length + 1),
-      name: userData.name || '',
-      email: userData.email || '',
-      role: userData.role || 'student',
-      ...(userData.department && { department: userData.department }),
-      ...(userData.chore && { chore: userData.chore }),
-      profileImage: 'https://picsum.photos/id/1019/200', // Default profile image
-      image: 'https://picsum.photos/id/1019/200' // Default profile image
-    };
-    
-    // In a real app, you'd save to database and hash password
-    // For demo, we'll just add to mock data
-    mockUsers.push(newUser);
-    
-    // Save to local storage & update state
-    localStorage.setItem('university_hub_user', JSON.stringify(newUser));
-    setUser(newUser);
-    setIsAuthenticated(true);
-    
-    return Promise.resolve();
-  };
-  
-  // Update profile image
-  const updateProfileImage = (imageUrl: string) => {
-    if (user) {
-      const updatedUser = { ...user, profileImage: imageUrl, image: imageUrl };
-      setUser(updatedUser);
-      localStorage.setItem('university_hub_user', JSON.stringify(updatedUser));
-    }
-  };
-  
-  const authContextValue: AuthContextType = {
-    user,
-    isAuthenticated,
-    login,
-    logout,
-    register,
-    updateProfileImage
-  };
-  
+
   return (
-    <AuthContext.Provider value={authContextValue}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
