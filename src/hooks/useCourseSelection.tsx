@@ -4,12 +4,12 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { coursesData } from '@/data/coursesData';
 
-export const useCourseSelection = (allCoursesData: any[]) => {
+export const useCourseSelection = (allCoursesData: any[] = []) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [displayedCourses, setDisplayedCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [showAllCourses, setShowAllCourses] = useState(false);
 
   useEffect(() => {
