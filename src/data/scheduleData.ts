@@ -4,6 +4,7 @@ import { ScheduleItem } from './types';
 export const scheduleData: ScheduleItem[] = [
   {
     id: 1,
+    courseName: 'Introduction to Computer Science',
     course: 'Introduction to Computer Science',
     startTime: '09:00 AM',
     endTime: '10:30 AM',
@@ -12,6 +13,7 @@ export const scheduleData: ScheduleItem[] = [
   },
   {
     id: 2,
+    courseName: 'Calculus II',
     course: 'Calculus II',
     startTime: '11:00 AM',
     endTime: '12:30 PM',
@@ -27,6 +29,7 @@ export const scheduleData: ScheduleItem[] = [
   },
   {
     id: 4,
+    courseName: 'Physics Lab',
     course: 'Physics Lab',
     startTime: '02:00 PM',
     endTime: '03:30 PM',
@@ -35,6 +38,7 @@ export const scheduleData: ScheduleItem[] = [
   },
   {
     id: 5,
+    courseName: 'Cell Biology',
     course: 'Cell Biology',
     startTime: '09:30 AM',
     endTime: '11:00 AM',
@@ -43,6 +47,7 @@ export const scheduleData: ScheduleItem[] = [
   },
   {
     id: 6,
+    courseName: 'Anatomy & Physiology',
     course: 'Anatomy & Physiology',
     startTime: '10:00 AM',
     endTime: '12:00 PM',

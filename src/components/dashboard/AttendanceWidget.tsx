@@ -15,7 +15,8 @@ export default function AttendanceWidget() {
   
   if (!user) return null;
   
-  const stats = getUserAttendanceStats(user.id);
+  // Make sure to pass user.id as a string
+  const stats = getUserAttendanceStats(user.id.toString());
   
   // For the progress bar
   const progressPercentage = stats.presentPercentage;

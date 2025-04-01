@@ -17,13 +17,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { BookOpen, GraduationCap, Briefcase, HelpingHand } from 'lucide-react';
+import { User } from '@/data/types';
 
 const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student');
+  const [role, setRole] = useState<'student' | 'faculty' | 'staff'>('student');
   const [major, setMajor] = useState('');
   const [chore, setChore] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +75,7 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      let userData = {
+      let userData: Partial<User> & { password: string } = {
         name,
         email,
         password,
@@ -82,9 +83,9 @@ const Register = () => {
       };
       
       if (role === 'student' || role === 'faculty') {
-        userData = { ...userData, department: major };
+        userData.department = major;
       } else if (role === 'staff') {
-        userData = { ...userData, chore };
+        userData.chore = chore;
       }
       
       // Register user

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -22,10 +23,23 @@ import { assignmentsData } from '@/data/assignmentsData';
 import { eventsData } from '@/data/eventsData';
 import { cafeteriaMenuData } from '@/data/cafeteriaMenuData';
 import { notificationsData } from '@/data/notificationsData';
+import { Course } from '@/data/types';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Convert coursesData to match the Course type if necessary
+  const typedCoursesData: Course[] = coursesData.map(course => ({
+    id: course.id,
+    name: course.name,
+    code: course.code,
+    instructor: course.instructor,
+    progress: course.progress,
+    department: course.department,
+    classroom: course.location,
+    // Add any other fields that need to be mapped
+  }));
 
   useEffect(() => {
     // Simulating data loading
@@ -58,7 +72,7 @@ export default function Dashboard() {
                   <DashboardHeader />
                   <StudentDashboardContent
                     scheduleData={scheduleData}
-                    coursesData={coursesData}
+                    coursesData={typedCoursesData}
                     assignmentsData={assignmentsData}
                     eventsData={eventsData}
                     cafeteriaMenuData={cafeteriaMenuData}

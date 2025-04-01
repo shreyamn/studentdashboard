@@ -1,6 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppSidebar } from '../components/layout/Sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import Navbar from '@/components/layout/Navbar';
+import PageTransition from '@/components/ui/PageTransition';
 import { CoursesHeader } from '../components/courses/CoursesHeader';
 import { CourseContent } from '../components/courses/CourseContent';
 import { DepartmentToggle } from '../components/courses/DepartmentToggle';
@@ -26,11 +29,15 @@ const Courses = () => {
     // Filter by search query
     if (searchQuery.trim() !== '') {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(course => 
-        course.name.toLowerCase().includes(query) || 
-        course.code.toLowerCase().includes(query) ||
-        course.instructor.name.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter(course => {
+        const instructorName = typeof course.instructor === 'string' 
+          ? course.instructor.toLowerCase()
+          : course.instructor.name.toLowerCase();
+          
+        return course.name.toLowerCase().includes(query) || 
+          course.code.toLowerCase().includes(query) ||
+          instructorName.includes(query);
+      });
     }
     
     setFilteredCourses(filtered);
@@ -46,26 +53,36 @@ const Courses = () => {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <CoursesHeader 
-        department={!showAllCourses && user?.department ? user.department : undefined} 
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      
-      <DepartmentToggle 
-        showAllCourses={showAllCourses}
-        toggleShowAllCourses={toggleShowAllCourses}
-      />
-      
-      <CourseContent 
-        filteredCourses={filteredCourses}
-        selectedCourse={selectedCourse}
-        setSelectedCourse={setSelectedCourse}
-        department={!showAllCourses ? user?.department : undefined}
-        showAllCourses={showAllCourses}
-      />
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Navbar />
+          <PageTransition className="flex-1 pt-24 px-4 pb-8">
+            <div className="container mx-auto py-8">
+              <CoursesHeader 
+                department={!showAllCourses && user?.department ? user.department : undefined} 
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+              
+              <DepartmentToggle 
+                showAllCourses={showAllCourses}
+                toggleShowAllCourses={toggleShowAllCourses}
+              />
+              
+              <CourseContent 
+                filteredCourses={filteredCourses}
+                selectedCourse={selectedCourse}
+                setSelectedCourse={setSelectedCourse}
+                department={!showAllCourses ? user?.department : undefined}
+                showAllCourses={showAllCourses}
+              />
+            </div>
+          </PageTransition>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

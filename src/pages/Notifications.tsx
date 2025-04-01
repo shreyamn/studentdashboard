@@ -10,12 +10,24 @@ import PageTransition from '@/components/ui/PageTransition';
 import NotificationsHeader from '@/components/notifications/NotificationsHeader';
 import NotificationsList from '@/components/notifications/NotificationsList';
 import EmptyNotifications from '@/components/notifications/EmptyNotifications';
-import { extendedNotificationsData, NotificationType } from '@/data/notificationsData';
+import { extendedNotificationsData } from '@/data/notificationsData';
+import { Notification } from '@/data/types';
+
+// Define a type that matches what the NotificationItem component expects
+type ComponentNotificationType = {
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  type: "info" | "success" | "warning" | "alert";
+  read?: boolean;
+  roles?: string[];
+};
 
 export default function Notifications() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showAll, setShowAll] = useState(true);
   const [displayCount, setDisplayCount] = useState(5);
 
@@ -23,11 +35,22 @@ export default function Notifications() {
     if (user) {
       // Filter notifications based on user's role
       const filteredNotifications = extendedNotificationsData.filter(notification => 
-        notification.roles.includes(user.role)
+        notification.roles?.includes(user.role)
       );
       setNotifications(filteredNotifications);
     }
   }, [user]);
+
+  // Convert our notifications to the type expected by the components
+  const convertToComponentType = (notification: Notification): ComponentNotificationType => {
+    return {
+      ...notification,
+      // Ensure type is one of the allowed values
+      type: (notification.type as "info" | "success" | "warning" | "alert") || "info",
+    };
+  };
+
+  const componentNotifications = notifications.map(convertToComponentType);
 
   const handleMarkAsRead = (id: number) => {
     setNotifications(notifications.map(notification => 
@@ -55,7 +78,7 @@ export default function Notifications() {
     });
   };
 
-  const handleViewDetails = (notification: NotificationType) => {
+  const handleViewDetails = (notification: ComponentNotificationType) => {
     // In a real app, this would navigate to a detail view
     // For now, we'll just show a toast with details
     toast({
@@ -66,8 +89,8 @@ export default function Notifications() {
   };
 
   const displayedNotifications = showAll 
-    ? notifications 
-    : notifications.slice(0, displayCount);
+    ? componentNotifications 
+    : componentNotifications.slice(0, displayCount);
 
   return (
     <SidebarProvider>
@@ -91,7 +114,7 @@ export default function Notifications() {
                   <EmptyNotifications />
                 ) : (
                   <NotificationsList
-                    notifications={notifications}
+                    notifications={componentNotifications}
                     displayedNotifications={displayedNotifications}
                     showAll={showAll}
                     displayCount={displayCount}

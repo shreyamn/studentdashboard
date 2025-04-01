@@ -30,7 +30,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 export default function Profile() {
-  const { user, updateProfileImage } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [profileImage, setProfileImage] = useState<string | undefined>(user?.profileImage);
@@ -78,6 +78,10 @@ export default function Profile() {
         description: "Your new profile photo has been selected. Save to apply changes."
       });
     }
+  };
+
+  const updateProfileImage = (imageUrl: string) => {
+    console.log("Updating profile image:", imageUrl);
   };
 
   const handleSaveProfile = () => {

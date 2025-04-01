@@ -34,7 +34,7 @@ export default function TodaySchedule({ scheduleData }: TodayScheduleProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-medium">
-                    {item.course || item.name}
+                    {item.course || item.courseName || item.name || "Untitled Event"}
                   </h3>
                   <p className="text-sm text-muted-foreground flex items-center">
                     <MapPin className="h-3 w-3 mr-1 inline" />
