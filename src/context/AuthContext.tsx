@@ -12,6 +12,8 @@ interface User {
   department?: string; // For students and faculty
   chore?: string;      // For staff
   image?: string;
+  profileImage?: string;
+  year?: number;
 }
 
 // Mock users data
@@ -22,7 +24,9 @@ const mockUsers: User[] = [
     email: 'john.student@university.edu',
     role: 'student',
     department: 'Computer Science',
-    image: 'https://picsum.photos/id/1005/200'
+    image: 'https://picsum.photos/id/1005/200',
+    profileImage: 'https://picsum.photos/id/1005/200',
+    year: 2
   },
   {
     id: 2,
@@ -30,7 +34,8 @@ const mockUsers: User[] = [
     email: 'emma.faculty@faculty.university.edu',
     role: 'faculty',
     department: 'Computer Science',
-    image: 'https://picsum.photos/id/1011/200'
+    image: 'https://picsum.photos/id/1011/200',
+    profileImage: 'https://picsum.photos/id/1011/200'
   },
   {
     id: 3,
@@ -38,7 +43,8 @@ const mockUsers: User[] = [
     email: 'mike.staff@staff.university.edu',
     role: 'staff',
     chore: 'Events',
-    image: 'https://picsum.photos/id/1012/200'
+    image: 'https://picsum.photos/id/1012/200',
+    profileImage: 'https://picsum.photos/id/1012/200'
   }
 ];
 
@@ -48,6 +54,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: Partial<User> & { password: string }) => Promise<void>;
+  updateProfileImage?: (imageUrl: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -113,7 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const register = async (userData: Partial<User> & { password: string }) => {
     // Check if email exists
     const emailExists = mockUsers.some(
-      u => u.email.toLowerCase() === userData.email?.toLowerCase()
+      u => u.email?.toLowerCase() === userData.email?.toLowerCase()
     );
     
     if (emailExists) {
@@ -128,6 +135,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       role: userData.role as 'student' | 'faculty' | 'staff',
       ...(userData.department && { department: userData.department }),
       ...(userData.chore && { chore: userData.chore }),
+      profileImage: 'https://picsum.photos/id/1019/200', // Default profile image
       image: 'https://picsum.photos/id/1019/200' // Default profile image
     };
     
@@ -143,12 +151,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return Promise.resolve();
   };
   
+  // Update profile image
+  const updateProfileImage = (imageUrl: string) => {
+    if (user) {
+      const updatedUser = { ...user, profileImage: imageUrl, image: imageUrl };
+      setUser(updatedUser);
+      localStorage.setItem('university_hub_user', JSON.stringify(updatedUser));
+    }
+  };
+  
   const authContextValue: AuthContextType = {
     user,
     isAuthenticated,
     login,
     logout,
-    register
+    register,
+    updateProfileImage
   };
   
   return (

@@ -46,11 +46,11 @@ const ProtectedCourseRoute = ({ children }) => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <AttendanceProvider>
-          <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <AttendanceProvider>
+            <Toaster />
+            <Sonner />
             <AnimatePresence mode="wait">
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -75,9 +75,9 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AnimatePresence>
-          </BrowserRouter>
-        </AttendanceProvider>
-      </AuthProvider>
+          </AttendanceProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

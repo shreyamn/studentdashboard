@@ -1,5 +1,4 @@
 
-// Assuming this is the file to create - I'm creating a minimal version that fixes the TypeScript errors
 import React from 'react';
 import { AppSidebar } from '@/components/layout/Sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -18,7 +17,8 @@ export default function Attendance() {
     }
     
     // Make sure we pass strings, not numbers
-    const stats = getUserAttendanceStats(user.id.toString());
+    const userId = typeof user.id === 'number' ? user.id.toString() : user.id;
+    const stats = getUserAttendanceStats(userId);
     
     return (
       <div>

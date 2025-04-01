@@ -16,13 +16,14 @@ export interface ScheduleItem {
 }
 
 export interface User {
-  id: string;
+  id: number | string;
   name: string;
   email: string;
   role: "student" | "faculty" | "staff";
   department?: string;
   year?: number;
   profileImage?: string;
+  image?: string;
   chore?: string;
 }
 
@@ -75,6 +76,17 @@ export interface Notification {
   type: string;
   read?: boolean;
   roles?: string[];
+  course?: string;
+}
+
+export interface ComponentNotificationType {
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  type: "info" | "success" | "warning" | "alert";
+  read?: boolean;
+  roles?: string[];
 }
 
 export interface FacultyChore {
@@ -100,14 +112,18 @@ export interface StaffChore {
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   register: (userData: Partial<User> & { password: string }) => Promise<void>;
   logout: () => void;
-  updateProfileImage: (imageUrl: string) => void;
+  updateProfileImage?: (imageUrl: string) => void;
 }
 
 export interface AttendanceStats {
   present: number;
   absent: number;
   presentPercentage: number;
+}
+
+export interface NotificationType extends ComponentNotificationType {
+  course?: string;
 }
